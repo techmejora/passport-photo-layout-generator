@@ -14,7 +14,9 @@ const backgroundColors = {
   white: '#FFFFFF',
   'light-gray': '#F5F5F5',
   blue: '#E3F2FD',
-  red: '#FFEBEE'
+  red: '#FFEBEE',
+  'light-blue': '#F0F8FF',
+  cream: '#FFFDD0'
 };
 
 export default function LayoutPreview({
@@ -101,8 +103,11 @@ export default function LayoutPreview({
               {Array.from({ length: layout.totalPhotos }).map((_, index) => (
                 <div
                   key={index}
-                  className="border border-gray-400 bg-white flex items-center justify-center overflow-hidden"
-                  style={{ aspectRatio: '3.5 / 4.5' }}
+                  className="border border-gray-400 flex items-center justify-center overflow-hidden"
+                  style={{ 
+                    aspectRatio: '3.5 / 4.5',
+                    backgroundColor: bgColor
+                  }}
                 >
                   {selectedImage ? (
                     <img
@@ -122,7 +127,7 @@ export default function LayoutPreview({
           
           <div className="mt-4 text-center">
             <p className="text-xs text-gray-500">
-              Cutting marks will be added to the final PDF for easy trimming
+              Background color will be applied when you remove the background from your photo
             </p>
           </div>
         </div>

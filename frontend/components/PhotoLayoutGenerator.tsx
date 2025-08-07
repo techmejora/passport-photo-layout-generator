@@ -14,7 +14,7 @@ import Header from './Header';
 export default function PhotoLayoutGenerator() {
   const { toast } = useToast();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [paperSize, setPaperSize] = useState('4x6');
+  const [paperSize, setPaperSize] = useState('4R');
   const [photoSize, setPhotoSize] = useState('3.5x4.5');
   const [backgroundColor, setBackgroundColor] = useState('white');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -77,7 +77,7 @@ export default function PhotoLayoutGenerator() {
     try {
       const result = await backend.photo.generateLayout({
         imageData: selectedImage,
-        paperSize: paperSize as "4x6" | "A4",
+        paperSize: paperSize as "3R" | "4R" | "5R" | "A4" | "A5" | "Letter" | "Legal",
         photoSize: photoSize as "3.5x4.5" | "2x2" | "35x45mm",
         backgroundColor,
         rows: layout?.rows || 2,
@@ -122,7 +122,10 @@ export default function PhotoLayoutGenerator() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Upload and Settings */}
           <div className="lg:col-span-1 space-y-6">
-            <PhotoUpload onImageSelect={handleImageSelect} />
+            <PhotoUpload 
+              onImageSelect={handleImageSelect} 
+              backgroundColor={backgroundColor}
+            />
             
             {settings && (
               <SettingsPanel

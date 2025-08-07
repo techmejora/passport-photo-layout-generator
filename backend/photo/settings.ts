@@ -38,8 +38,18 @@ export const getSettings = api<void, PhotoSettings>(
     return {
       paperSizes: [
         {
-          id: "4x6",
-          name: "4\" × 6\" (10.16 × 15.24 cm)",
+          id: "3R",
+          name: "3R (3.5 × 5 inch)",
+          width: 12.7,
+          height: 8.89,
+          marginLeft: 0.5,
+          marginRight: 0.5,
+          marginTop: 0.5,
+          marginBottom: 0.5
+        },
+        {
+          id: "4R",
+          name: "4R (6 × 4 inch)",
           width: 15.24,
           height: 10.16,
           marginLeft: 0.62,
@@ -48,10 +58,50 @@ export const getSettings = api<void, PhotoSettings>(
           marginBottom: 0.58
         },
         {
+          id: "5R",
+          name: "5R (7 × 5 inch)",
+          width: 17.78,
+          height: 12.7,
+          marginLeft: 0.7,
+          marginRight: 0.7,
+          marginTop: 0.6,
+          marginBottom: 0.6
+        },
+        {
           id: "A4",
-          name: "A4 (21 × 29.7 cm)",
+          name: "A4 (8.27 × 11.69 inch)",
           width: 21,
           height: 29.7,
+          marginLeft: 1,
+          marginRight: 1,
+          marginTop: 1,
+          marginBottom: 1
+        },
+        {
+          id: "A5",
+          name: "A5 (5.83 × 8.27 inch)",
+          width: 14.8,
+          height: 21,
+          marginLeft: 0.8,
+          marginRight: 0.8,
+          marginTop: 0.8,
+          marginBottom: 0.8
+        },
+        {
+          id: "Letter",
+          name: "Letter (8.5 × 11 inch)",
+          width: 21.59,
+          height: 27.94,
+          marginLeft: 1,
+          marginRight: 1,
+          marginTop: 1,
+          marginBottom: 1
+        },
+        {
+          id: "Legal",
+          name: "Legal (8.5 × 14 inch)",
+          width: 21.59,
+          height: 35.56,
           marginLeft: 1,
           marginRight: 1,
           marginTop: 1,
@@ -85,7 +135,9 @@ export const getSettings = api<void, PhotoSettings>(
         { id: "white", name: "White", hex: "#FFFFFF" },
         { id: "light-gray", name: "Light Gray", hex: "#F5F5F5" },
         { id: "blue", name: "Blue", hex: "#E3F2FD" },
-        { id: "red", name: "Red", hex: "#FFEBEE" }
+        { id: "red", name: "Red", hex: "#FFEBEE" },
+        { id: "light-blue", name: "Light Blue", hex: "#F0F8FF" },
+        { id: "cream", name: "Cream", hex: "#FFFDD0" }
       ]
     };
   }

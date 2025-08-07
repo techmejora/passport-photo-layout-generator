@@ -1,17 +1,21 @@
 import React, { useCallback, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Upload, Image as ImageIcon, X } from 'lucide-react';
+import { Upload, Image as ImageIcon, X, Wand2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import backend from '~backend/client';
 
 interface PhotoUploadProps {
   onImageSelect: (imageData: string) => void;
+  backgroundColor: string;
 }
 
-export default function PhotoUpload({ onImageSelect }: PhotoUploadProps) {
+export default function PhotoUpload({ onImageSelect, backgroundColor }: PhotoUploadProps) {
   const { toast } = useToast();
   const [dragActive, setDragActive] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [processedImage, setProcessedImage] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleFile = useCallback((file: File) => {
     if (!file.type.startsWith('image/')) {
@@ -36,6 +40,7 @@ export default function PhotoUpload({ onImageSelect }: PhotoUploadProps) {
     reader.onload = (e) => {
       const result = e.target?.result as string;
       setSelectedImage(result);
+      setProcessedImage(null);
       onImageSelect(result);
     };
     reader.readAsDataURL(file);
@@ -69,8 +74,51 @@ export default function PhotoUpload({ onImageSelect }: PhotoUploadProps) {
 
   const clearImage = useCallback(() => {
     setSelectedImage(null);
+    setProcessedImage(null);
     onImageSelect('');
   }, [onImageSelect]);
+
+  const removeBackground = useCallback(async () => {
+    if (!selectedImage) return;
+
+    setIsProcessing(true);
+    try {
+      const backgroundColors = {
+        white: '#FFFFFF',
+        'light-gray': '#F5F5F5',
+        blue: '#E3F2FD',
+        red: '#FFEBEE',
+        'light-blue': '#F0F8FF',
+        cream: '#FFFDD0'
+      };
+
+      const bgColor = backgroundColors[backgroundColor as keyof typeof backgroundColors] || '#FFFFFF';
+
+      const result = await backend.photo.removeBackground({
+        imageData: selectedImage,
+        backgroundColor: bgColor
+      });
+
+      setProcessedImage(result.processedImageData);
+      onImageSelect(result.processedImageData);
+
+      toast({
+        title: "Background Removed",
+        description: "Background has been removed and new color applied",
+      });
+    } catch (error) {
+      console.error('Failed to remove background:', error);
+      toast({
+        title: "Processing Failed",
+        description: "Failed to remove background. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  }, [selectedImage, backgroundColor, onImageSelect, toast]);
+
+  const currentImage = processedImage || selectedImage;
 
   return (
     <Card>
@@ -81,11 +129,11 @@ export default function PhotoUpload({ onImageSelect }: PhotoUploadProps) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {selectedImage ? (
+        {currentImage ? (
           <div className="space-y-4">
             <div className="relative">
               <img
-                src={selectedImage}
+                src={currentImage}
                 alt="Selected"
                 className="w-full h-48 object-cover rounded-lg border"
               />
@@ -98,8 +146,33 @@ export default function PhotoUpload({ onImageSelect }: PhotoUploadProps) {
                 <X className="h-4 w-4" />
               </Button>
             </div>
+            
+            <div className="flex gap-2">
+              <Button
+                onClick={removeBackground}
+                disabled={isProcessing}
+                variant="outline"
+                className="flex-1"
+              >
+                {isProcessing ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="h-4 w-4 mr-2" />
+                    Remove Background
+                  </>
+                )}
+              </Button>
+            </div>
+            
             <p className="text-sm text-gray-600 text-center">
-              Image uploaded successfully. You can now generate your layout.
+              {processedImage 
+                ? "Background removed! You can now generate your layout."
+                : "Image uploaded. Click 'Remove Background' to apply background color."
+              }
             </p>
           </div>
         ) : (

@@ -21,7 +21,15 @@ export const calculateLayout = api<CalculateLayoutRequest, CalculateLayoutRespon
   async (req) => {
     // Paper size configurations
     const paperSizes = {
-      "4x6": {
+      "3R": {
+        width: 12.7,
+        height: 8.89,
+        marginLeft: 0.5,
+        marginRight: 0.5,
+        marginTop: 0.5,
+        marginBottom: 0.5
+      },
+      "4R": {
         width: 15.24,
         height: 10.16,
         marginLeft: 0.62,
@@ -29,9 +37,41 @@ export const calculateLayout = api<CalculateLayoutRequest, CalculateLayoutRespon
         marginTop: 0.58,
         marginBottom: 0.58
       },
+      "5R": {
+        width: 17.78,
+        height: 12.7,
+        marginLeft: 0.7,
+        marginRight: 0.7,
+        marginTop: 0.6,
+        marginBottom: 0.6
+      },
       "A4": {
         width: 21,
         height: 29.7,
+        marginLeft: 1,
+        marginRight: 1,
+        marginTop: 1,
+        marginBottom: 1
+      },
+      "A5": {
+        width: 14.8,
+        height: 21,
+        marginLeft: 0.8,
+        marginRight: 0.8,
+        marginTop: 0.8,
+        marginBottom: 0.8
+      },
+      "Letter": {
+        width: 21.59,
+        height: 27.94,
+        marginLeft: 1,
+        marginRight: 1,
+        marginTop: 1,
+        marginBottom: 1
+      },
+      "Legal": {
+        width: 21.59,
+        height: 35.56,
         marginLeft: 1,
         marginRight: 1,
         marginTop: 1,
