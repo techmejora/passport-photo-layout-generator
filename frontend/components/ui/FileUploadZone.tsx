@@ -70,18 +70,18 @@ export default function FileUploadZone({
 
   return (
     <div
-      className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${
+      className={`border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300 ${
         dragActive
-          ? 'border-blue-500 bg-blue-50'
-          : 'border-gray-300 hover:border-gray-400'
+          ? 'border-purple-500 bg-gradient-to-br from-purple-50 to-pink-50 scale-105'
+          : 'border-gray-300 hover:border-purple-400 hover:bg-gradient-to-br hover:from-purple-50 hover:to-pink-50'
       } ${className}`}
       onDragEnter={handleDrag}
       onDragLeave={handleDrag}
       onDragOver={handleDrag}
       onDrop={handleDrop}
     >
-      <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-        <Upload className="h-8 w-8 text-gray-400" />
+      <div className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+        <Upload className="h-8 w-8 text-purple-600" />
       </div>
       <p className="text-lg font-medium text-gray-700 mb-2">
         Drag and drop your photo here
@@ -98,13 +98,13 @@ export default function FileUploadZone({
           className="hidden"
           id="file-upload"
         />
-        <Button asChild className="bg-blue-600 hover:bg-blue-700">
+        <Button asChild className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg">
           <label htmlFor="file-upload" className="cursor-pointer">
             <Upload className="h-4 w-4 mr-2" />
             Browse Files
           </label>
         </Button>
-        <Button variant="outline">
+        <Button variant="outline" className="border-purple-200 hover:bg-purple-50">
           <Camera className="h-4 w-4 mr-2" />
           Take Photo
         </Button>

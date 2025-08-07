@@ -25,9 +25,9 @@ export default function PhotoGrid({
   const bgColor = backgroundColors[backgroundColor as keyof typeof backgroundColors] || '#E3F2FD';
 
   return (
-    <div className="bg-gray-50 rounded-lg p-6">
+    <div className="bg-gradient-to-br from-gray-50 to-purple-50 rounded-xl p-6 border border-purple-100">
       <div 
-        className="mx-auto border-2 border-gray-300 rounded-lg p-4 bg-white shadow-sm"
+        className="mx-auto border-2 border-purple-300 rounded-lg p-4 bg-white shadow-lg"
         style={{
           width: `${Math.min(500, layout.usableWidth * 25)}px`,
           height: `${Math.min(350, layout.usableHeight * 25)}px`,
@@ -44,7 +44,7 @@ export default function PhotoGrid({
           {Array.from({ length: layout.totalPhotos }).map((_, index) => (
             <div
               key={index}
-              className="border border-gray-300 flex items-center justify-center overflow-hidden rounded-sm"
+              className="border-2 border-purple-200 flex items-center justify-center overflow-hidden rounded-sm shadow-sm hover:shadow-md transition-shadow"
               style={{ 
                 aspectRatio: '3.5 / 4.5',
                 backgroundColor: bgColor
@@ -57,7 +57,7 @@ export default function PhotoGrid({
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="text-gray-400 text-center">
+                <div className="text-purple-400 text-center">
                   <User className="h-6 w-6 mx-auto mb-1" />
                   <div className="text-xs">Photo</div>
                 </div>

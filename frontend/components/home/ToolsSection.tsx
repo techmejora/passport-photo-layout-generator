@@ -11,44 +11,48 @@ export default function ToolsSection() {
       title: 'Image Resizer',
       description: 'Resize images to any dimension while maintaining quality. Perfect for web and print.',
       href: '/image-resizer',
-      color: 'from-blue-500 to-blue-600',
-      bgColor: 'bg-blue-50',
-      iconColor: 'text-blue-600'
+      gradient: 'from-blue-500 via-cyan-500 to-teal-500',
+      bgGradient: 'from-blue-50 to-cyan-50',
+      iconBg: 'from-blue-600 to-cyan-600',
+      hoverShadow: 'hover:shadow-blue-500/25'
     },
     {
       icon: Crop,
       title: 'Image Cropper',
       description: 'Crop images with precision. Multiple aspect ratios and shapes available.',
       href: '/image-cropper',
-      color: 'from-green-500 to-green-600',
-      bgColor: 'bg-green-50',
-      iconColor: 'text-green-600'
+      gradient: 'from-green-500 via-emerald-500 to-teal-500',
+      bgGradient: 'from-green-50 to-emerald-50',
+      iconBg: 'from-green-600 to-emerald-600',
+      hoverShadow: 'hover:shadow-green-500/25'
     },
     {
       icon: Sparkles,
       title: 'Image Enhancer',
       description: 'Enhance your photos with professional-grade adjustments and filters.',
       href: '/image-enhancer',
-      color: 'from-purple-500 to-purple-600',
-      bgColor: 'bg-purple-50',
-      iconColor: 'text-purple-600'
+      gradient: 'from-purple-500 via-violet-500 to-indigo-500',
+      bgGradient: 'from-purple-50 to-violet-50',
+      iconBg: 'from-purple-600 to-violet-600',
+      hoverShadow: 'hover:shadow-purple-500/25'
     },
     {
       icon: Camera,
       title: 'Passport Photo Maker',
       description: 'Create professional passport photos with correct dimensions and backgrounds.',
       href: '/passport-photo',
-      color: 'from-orange-500 to-orange-600',
-      bgColor: 'bg-orange-50',
-      iconColor: 'text-orange-600'
+      gradient: 'from-orange-500 via-amber-500 to-yellow-500',
+      bgGradient: 'from-orange-50 to-amber-50',
+      iconBg: 'from-orange-600 to-amber-600',
+      hoverShadow: 'hover:shadow-orange-500/25'
     }
   ];
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
             Powerful Image Processing Tools
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -61,9 +65,9 @@ export default function ToolsSection() {
           {tools.map((tool, index) => {
             const Icon = tool.icon;
             return (
-              <Card key={index} className={`${tool.bgColor} border-0 hover:shadow-lg transition-all duration-300 group`}>
+              <Card key={index} className={`bg-gradient-to-br ${tool.bgGradient} border-0 hover:shadow-2xl ${tool.hoverShadow} transition-all duration-500 group transform hover:scale-105 hover:-translate-y-2`}>
                 <CardContent className="p-8 text-center">
-                  <div className={`w-16 h-16 rounded-full bg-gradient-to-r ${tool.color} flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                  <div className={`w-16 h-16 rounded-full bg-gradient-to-r ${tool.iconBg} flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                     <Icon className="h-8 w-8 text-white" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-3">
@@ -73,7 +77,7 @@ export default function ToolsSection() {
                     {tool.description}
                   </p>
                   <Link to={tool.href}>
-                    <Button variant="outline" className="group-hover:bg-white group-hover:shadow-md transition-all duration-300">
+                    <Button className={`bg-gradient-to-r ${tool.gradient} hover:shadow-lg text-white font-semibold transform hover:scale-105 transition-all duration-300`}>
                       Try Now
                       <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
                     </Button>

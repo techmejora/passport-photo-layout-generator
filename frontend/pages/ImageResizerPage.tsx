@@ -100,14 +100,14 @@ export default function ImageResizerPage() {
   }, [handleFile]);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 bg-gradient-to-br from-blue-50 to-cyan-50 min-h-screen">
       {/* Header */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-center space-x-3 mb-4">
-          <div className="bg-blue-100 p-3 rounded-full">
-            <Maximize className="h-8 w-8 text-blue-600" />
+          <div className="bg-gradient-to-r from-blue-500 to-cyan-500 p-3 rounded-full shadow-lg">
+            <Maximize className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">Image Resizer</h1>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">Image Resizer</h1>
         </div>
         <p className="text-gray-600 max-w-2xl mx-auto">
           Resize your images to any dimension while maintaining quality. Perfect for web optimization, social media, and print.
@@ -117,14 +117,14 @@ export default function ImageResizerPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Upload Section */}
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
+          <Card className="border-0 shadow-xl bg-gradient-to-br from-blue-50 to-cyan-50">
+            <CardHeader className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-t-lg">
               <CardTitle className="flex items-center space-x-2">
-                <Upload className="h-5 w-5 text-blue-600" />
+                <Upload className="h-5 w-5" />
                 <span>Upload Image</span>
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-6">
               {selectedImage ? (
                 <ImagePreview
                   src={selectedImage}
@@ -138,11 +138,11 @@ export default function ImageResizerPage() {
           </Card>
 
           {originalDimensions.width > 0 && (
-            <Card>
-              <CardHeader>
+            <Card className="border-0 shadow-xl bg-gradient-to-br from-cyan-50 to-blue-50">
+              <CardHeader className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-t-lg">
                 <CardTitle>Original Dimensions</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-6">
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <div className="font-medium text-gray-700">Width:</div>
@@ -160,11 +160,11 @@ export default function ImageResizerPage() {
 
         {/* Settings Section */}
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
+          <Card className="border-0 shadow-xl bg-gradient-to-br from-blue-50 to-cyan-50">
+            <CardHeader className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-t-lg">
               <CardTitle>Resize Settings</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 p-6">
               <div className="space-y-2">
                 <Label>Resize Mode</Label>
                 <Select value={resizeMode} onValueChange={setResizeMode}>
@@ -221,19 +221,19 @@ export default function ImageResizerPage() {
                   max="100"
                   value={quality}
                   onChange={(e) => setQuality(e.target.value)}
-                  className="w-full"
+                  className="w-full accent-blue-600"
                 />
               </div>
 
               <div className="flex space-x-3">
-                <Button variant="outline" className="flex-1" onClick={handleReset}>
+                <Button variant="outline" className="flex-1 border-blue-200 hover:bg-blue-50" onClick={handleReset}>
                   <RotateCcw className="h-4 w-4 mr-2" />
                   Reset
                 </Button>
                 <Button 
                   onClick={handleResize}
                   disabled={!selectedImage || isProcessing}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700"
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg"
                 >
                   {isProcessing ? (
                     <>

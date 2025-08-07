@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/components/ui/use-toast';
+import { Camera, Sparkles } from 'lucide-react';
 import backend from '~backend/client';
 import type { PhotoSettings } from '~backend/photo/settings';
 import type { CalculateLayoutResponse } from '~backend/photo/calculate';
-import Header from './Header';
 import PhotoUpload from './PhotoUpload';
 import LayoutPreview from './LayoutPreview';
 import LayoutSpecifications from './LayoutSpecifications';
@@ -118,17 +118,32 @@ export default function PhotoLayoutGenerator() {
 
   if (settingsLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-amber-50">
         <LoadingSpinner size="lg" text="Loading settings..." />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
+      {/* Header */}
+      <div className="text-center py-12">
+        <div className="flex items-center justify-center space-x-3 mb-4">
+          <div className="bg-gradient-to-r from-orange-500 to-amber-500 p-3 rounded-full shadow-lg">
+            <Camera className="h-8 w-8 text-white" />
+          </div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
+            Passport Photo Maker
+          </h1>
+          <Sparkles className="h-8 w-8 text-amber-500 animate-pulse" />
+        </div>
+        <p className="text-gray-600 max-w-3xl mx-auto text-lg">
+          Create professional passport photos with correct dimensions and backgrounds. 
+          Fast, accurate, and print-ready results.
+        </p>
+      </div>
       
-      
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           {/* Left Column - Upload */}
           <div className="space-y-6">

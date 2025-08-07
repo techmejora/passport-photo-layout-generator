@@ -53,14 +53,14 @@ export default function LayoutSpecifications({
   ];
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="border-0 shadow-xl bg-gradient-to-br from-green-50 to-emerald-50">
+      <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-t-lg">
         <CardTitle className="flex items-center space-x-2">
-          <Settings className="h-5 w-5 text-blue-600" />
+          <Settings className="h-5 w-5" />
           <span>Layout Specifications</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 p-6">
         <div className="grid grid-cols-2 gap-4 text-sm">
           {specifications.map((spec, index) => (
             <SpecificationItem

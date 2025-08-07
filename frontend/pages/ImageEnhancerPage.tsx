@@ -78,14 +78,14 @@ export default function ImageEnhancerPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 bg-gradient-to-br from-purple-50 to-pink-50 min-h-screen">
       {/* Header */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-center space-x-3 mb-4">
-          <div className="bg-purple-100 p-3 rounded-full">
-            <Sparkles className="h-8 w-8 text-purple-600" />
+          <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-3 rounded-full shadow-lg">
+            <Sparkles className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">Image Enhancer</h1>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Image Enhancer</h1>
         </div>
         <p className="text-gray-600 max-w-2xl mx-auto">
           Enhance your images with professional-grade adjustments. Improve brightness, contrast, saturation, and sharpness.
@@ -95,26 +95,26 @@ export default function ImageEnhancerPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Upload Section */}
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
+          <Card className="border-0 shadow-xl bg-gradient-to-br from-purple-50 to-pink-50">
+            <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-t-lg">
               <CardTitle className="flex items-center space-x-2">
-                <Upload className="h-5 w-5 text-purple-600" />
+                <Upload className="h-5 w-5" />
                 <span>Upload Image</span>
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-6">
               {selectedImage ? (
                 <div className="space-y-4">
                   <div className="relative">
                     <img
                       src={selectedImage}
                       alt="Selected image"
-                      className="w-full h-64 object-cover rounded-lg border-2 border-dashed border-gray-300"
+                      className="w-full h-64 object-cover rounded-lg border-2 border-dashed border-purple-300"
                       style={getImageStyle()}
                     />
                   </div>
                   <div className="flex space-x-2">
-                    <Button variant="outline" className="flex-1" onClick={handleReplace}>
+                    <Button variant="outline" className="flex-1 border-purple-200 hover:bg-purple-50" onClick={handleReplace}>
                       <Upload className="h-4 w-4 mr-2" />
                       Replace
                     </Button>
@@ -129,14 +129,14 @@ export default function ImageEnhancerPage() {
 
         {/* Settings Section */}
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
+          <Card className="border-0 shadow-xl bg-gradient-to-br from-purple-50 to-pink-50">
+            <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-t-lg">
               <CardTitle className="flex items-center space-x-2">
-                <Sliders className="h-5 w-5 text-purple-600" />
+                <Sliders className="h-5 w-5" />
                 <span>Enhancement Settings</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 p-6">
               <div className="space-y-4">
                 <div className="space-y-2">
                   <div className="flex justify-between">
@@ -149,7 +149,7 @@ export default function ImageEnhancerPage() {
                     max="200"
                     value={brightness}
                     onChange={(e) => setBrightness(parseInt(e.target.value))}
-                    className="w-full"
+                    className="w-full accent-purple-600"
                   />
                 </div>
 
@@ -164,7 +164,7 @@ export default function ImageEnhancerPage() {
                     max="200"
                     value={contrast}
                     onChange={(e) => setContrast(parseInt(e.target.value))}
-                    className="w-full"
+                    className="w-full accent-purple-600"
                   />
                 </div>
 
@@ -179,7 +179,7 @@ export default function ImageEnhancerPage() {
                     max="200"
                     value={saturation}
                     onChange={(e) => setSaturation(parseInt(e.target.value))}
-                    className="w-full"
+                    className="w-full accent-purple-600"
                   />
                 </div>
 
@@ -194,7 +194,7 @@ export default function ImageEnhancerPage() {
                     max="100"
                     value={sharpness}
                     onChange={(e) => setSharpness(parseInt(e.target.value))}
-                    className="w-full"
+                    className="w-full accent-purple-600"
                   />
                 </div>
               </div>
@@ -205,6 +205,7 @@ export default function ImageEnhancerPage() {
                   <Button 
                     variant="outline" 
                     size="sm"
+                    className="border-purple-200 hover:bg-purple-50"
                     onClick={() => {
                       setBrightness(110);
                       setContrast(120);
@@ -217,6 +218,7 @@ export default function ImageEnhancerPage() {
                   <Button 
                     variant="outline" 
                     size="sm"
+                    className="border-purple-200 hover:bg-purple-50"
                     onClick={() => {
                       setBrightness(90);
                       setContrast(80);
@@ -229,6 +231,7 @@ export default function ImageEnhancerPage() {
                   <Button 
                     variant="outline" 
                     size="sm"
+                    className="border-purple-200 hover:bg-purple-50"
                     onClick={() => {
                       setBrightness(120);
                       setContrast(110);
@@ -241,6 +244,7 @@ export default function ImageEnhancerPage() {
                   <Button 
                     variant="outline" 
                     size="sm"
+                    className="border-purple-200 hover:bg-purple-50"
                     onClick={() => {
                       setBrightness(105);
                       setContrast(115);
@@ -254,14 +258,14 @@ export default function ImageEnhancerPage() {
               </div>
 
               <div className="flex space-x-3">
-                <Button variant="outline" className="flex-1" onClick={handleReset}>
+                <Button variant="outline" className="flex-1 border-purple-200 hover:bg-purple-50" onClick={handleReset}>
                   <RotateCcw className="h-4 w-4 mr-2" />
                   Reset
                 </Button>
                 <Button 
                   onClick={handleEnhance}
                   disabled={!selectedImage || isProcessing}
-                  className="flex-1 bg-purple-600 hover:bg-purple-700"
+                  className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg"
                 >
                   {isProcessing ? (
                     <>

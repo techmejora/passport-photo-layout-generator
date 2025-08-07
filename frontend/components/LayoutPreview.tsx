@@ -1,9 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Eye, RotateCcw, Download, User } from 'lucide-react';
+import { Eye, RotateCcw, Download } from 'lucide-react';
 import type { CalculateLayoutResponse } from '~backend/photo/calculate';
 import type { PhotoSettings } from '~backend/photo/settings';
 import LoadingSpinner from './ui/LoadingSpinner';
@@ -41,14 +39,14 @@ export default function LayoutPreview({
 }: LayoutPreviewProps) {
   if (isLoading || !layout) {
     return (
-      <Card>
-        <CardHeader>
+      <Card className="border-0 shadow-xl bg-gradient-to-br from-purple-50 to-pink-50">
+        <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-t-lg">
           <CardTitle className="flex items-center space-x-2">
-            <Eye className="h-5 w-5 text-blue-600" />
+            <Eye className="h-5 w-5" />
             <span>Preview Layout</span>
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <div className="flex items-center justify-center h-64">
             <LoadingSpinner size="md" />
           </div>
@@ -58,14 +56,14 @@ export default function LayoutPreview({
   }
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="border-0 shadow-xl bg-gradient-to-br from-purple-50 to-pink-50">
+      <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-t-lg">
         <CardTitle className="flex items-center space-x-2">
-          <Eye className="h-5 w-5 text-blue-600" />
+          <Eye className="h-5 w-5" />
           <span>Preview Layout</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 p-6">
         {/* Settings Controls */}
         <SettingsControls
           paperSize={paperSize}
@@ -86,14 +84,14 @@ export default function LayoutPreview({
 
         {/* Action Buttons */}
         <div className="flex space-x-3">
-          <Button variant="outline" className="flex-1">
+          <Button variant="outline" className="flex-1 border-purple-200 hover:bg-purple-50">
             <RotateCcw className="h-4 w-4 mr-2" />
             Reset
           </Button>
           <Button 
             onClick={onGenerateLayout}
             disabled={!selectedImage || isGenerating}
-            className="flex-1 bg-blue-600 hover:bg-blue-700"
+            className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg"
           >
             {isGenerating ? (
               <>

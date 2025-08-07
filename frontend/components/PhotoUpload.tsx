@@ -84,14 +84,14 @@ export default function PhotoUpload({
   }, [handleFile]);
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="border-0 shadow-xl bg-gradient-to-br from-blue-50 to-purple-50">
+      <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
         <CardTitle className="flex items-center space-x-2 text-lg">
-          <Upload className="h-5 w-5 text-blue-600" />
+          <Upload className="h-5 w-5" />
           <span>Upload Your Photo</span>
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         {selectedImage ? (
           <ImagePreview
             src={selectedImage}
