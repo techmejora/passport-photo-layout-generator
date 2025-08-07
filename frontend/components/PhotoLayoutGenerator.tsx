@@ -1,22 +1,21 @@
 import React, { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import backend from '~backend/client';
 import type { PhotoSettings } from '~backend/photo/settings';
 import type { CalculateLayoutResponse } from '~backend/photo/calculate';
-import PhotoUpload from './PhotoUpload';
-import SettingsPanel from './SettingsPanel';
-import LayoutPreview from './LayoutPreview';
 import Header from './Header';
+import PhotoUpload from './PhotoUpload';
+import LayoutPreview from './LayoutPreview';
+import LayoutSpecifications from './LayoutSpecifications';
+import FeatureCards from './FeatureCards';
 
 export default function PhotoLayoutGenerator() {
   const { toast } = useToast();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [paperSize, setPaperSize] = useState('4R');
   const [photoSize, setPhotoSize] = useState('3.5x4.5');
-  const [backgroundColor, setBackgroundColor] = useState('white');
+  const [backgroundColor, setBackgroundColor] = useState('blue');
   const [isGenerating, setIsGenerating] = useState(false);
 
   // Fetch photo settings
@@ -119,71 +118,52 @@ export default function PhotoLayoutGenerator() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-white">
       <Header />
       
       <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           {/* Left Column - Upload */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="space-y-6">
             <PhotoUpload 
               onImageSelect={handleImageSelect} 
               backgroundColor={backgroundColor}
+              selectedImage={selectedImage}
+              onImageUpdate={handleImageUpdate}
             />
+            
+            {layout && (
+              <LayoutSpecifications 
+                layout={layout}
+                paperSize={paperSize}
+                photoSize={photoSize}
+                settings={settings}
+              />
+            )}
           </div>
 
-          {/* Right Column - Preview and Generate */}
-          <div className="lg:col-span-2 space-y-6">
+          {/* Right Column - Preview */}
+          <div className="space-y-6">
             {layout && (
               <LayoutPreview
                 layout={layout}
                 selectedImage={selectedImage}
                 backgroundColor={backgroundColor}
-                isLoading={layoutLoading}
-              />
-            )}
-
-            {settings && (
-              <SettingsPanel
-                settings={settings}
                 paperSize={paperSize}
                 photoSize={photoSize}
-                backgroundColor={backgroundColor}
-                selectedImage={selectedImage}
+                settings={settings}
+                isLoading={layoutLoading}
+                isGenerating={isGenerating}
                 onPaperSizeChange={setPaperSize}
                 onPhotoSizeChange={setPhotoSize}
                 onBackgroundColorChange={setBackgroundColor}
-                onImageUpdate={handleImageUpdate}
+                onGenerateLayout={handleGenerateLayout}
               />
             )}
-
-            <Card>
-              <CardContent className="p-6">
-                <Button
-                  onClick={handleGenerateLayout}
-                  disabled={!selectedImage || isGenerating || layoutLoading}
-                  className="w-full h-12 text-lg font-semibold"
-                  size="lg"
-                >
-                  {isGenerating ? (
-                    <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                      Generating Layout...
-                    </>
-                  ) : (
-                    'Generate & Download PDF'
-                  )}
-                </Button>
-                
-                {layout && (
-                  <div className="mt-4 text-center text-sm text-gray-600">
-                    This will generate {layout.totalPhotos} photos ({layout.rows} rows × {layout.columns} columns)
-                  </div>
-                )}
-              </CardContent>
-            </Card>
           </div>
         </div>
+
+        <FeatureCards />
       </main>
     </div>
   );
