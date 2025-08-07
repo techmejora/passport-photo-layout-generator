@@ -83,6 +83,14 @@ export const calculateLayout = api<CalculateLayoutRequest, CalculateLayoutRespon
     const photoSizes = {
       "3.5x4.5": { width: 3.5, height: 4.5 },
       "2x2": { width: 5.08, height: 5.08 },
+      "33x48mm": { width: 3.3, height: 4.8 },
+      "25x35mm": { width: 2.5, height: 3.5 },
+      "45x45mm": { width: 4.5, height: 4.5 },
+      "35x50mm": { width: 3.5, height: 5.0 },
+      "CR80": { width: 8.57, height: 5.4 },
+      "3.5x2.5cm": { width: 3.5, height: 2.5 },
+      "1x1": { width: 2.54, height: 2.54 },
+      "1.2x1.6": { width: 3.05, height: 4.06 },
       "35x45mm": { width: 3.5, height: 4.5 }
     };
 

@@ -111,17 +111,73 @@ export const getSettings = api<void, PhotoSettings>(
       photoSizes: [
         {
           id: "3.5x4.5",
-          name: "3.5 × 4.5 cm (Passport)",
+          name: "3.5 × 4.5 cm (India, EU, UK)",
           width: 3.5,
           height: 4.5,
           borderWidth: 3
         },
         {
           id: "2x2",
-          name: "2\" × 2\" (5.08 × 5.08 cm)",
+          name: "2\" × 2\" (US, Canada)",
           width: 5.08,
           height: 5.08,
           borderWidth: 2
+        },
+        {
+          id: "33x48mm",
+          name: "33 × 48 mm (China)",
+          width: 3.3,
+          height: 4.8,
+          borderWidth: 2
+        },
+        {
+          id: "25x35mm",
+          name: "25 × 35 mm (India PAN)",
+          width: 2.5,
+          height: 3.5,
+          borderWidth: 2
+        },
+        {
+          id: "45x45mm",
+          name: "45 × 45 mm (Vietnam)",
+          width: 4.5,
+          height: 4.5,
+          borderWidth: 2
+        },
+        {
+          id: "35x50mm",
+          name: "35 × 50 mm (France/Italy)",
+          width: 3.5,
+          height: 5.0,
+          borderWidth: 2
+        },
+        {
+          id: "CR80",
+          name: "CR80 (3.375 × 2.125 in) - Standard Card",
+          width: 8.57,
+          height: 5.4,
+          borderWidth: 2
+        },
+        {
+          id: "3.5x2.5cm",
+          name: "3.5 × 2.5 cm - PAN Card (India)",
+          width: 3.5,
+          height: 2.5,
+          borderWidth: 1
+        },
+        {
+          id: "1x1",
+          name: "1\" × 1\" - Stamp Photo",
+          width: 2.54,
+          height: 2.54,
+          borderWidth: 1
+        },
+        {
+          id: "1.2x1.6",
+          name: "1.2\" × 1.6\" - Stamp Photo",
+          width: 3.05,
+          height: 4.06,
+          borderWidth: 1
         },
         {
           id: "35x45mm",
