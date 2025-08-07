@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Eye, Grid, Ruler } from 'lucide-react';
+import { Eye } from 'lucide-react';
 import type { CalculateLayoutResponse } from '~backend/photo/calculate';
 
 interface LayoutPreviewProps {
@@ -54,28 +54,6 @@ export default function LayoutPreview({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Layout Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          <div className="bg-gray-50 p-3 rounded-lg">
-            <Grid className="h-5 w-5 mx-auto mb-1 text-blue-600" />
-            <div className="text-lg font-semibold">{layout.totalPhotos}</div>
-            <div className="text-xs text-gray-600">Total Photos</div>
-          </div>
-          <div className="bg-gray-50 p-3 rounded-lg">
-            <Ruler className="h-5 w-5 mx-auto mb-1 text-green-600" />
-            <div className="text-lg font-semibold">{layout.rows} × {layout.columns}</div>
-            <div className="text-xs text-gray-600">Grid Layout</div>
-          </div>
-          <div className="bg-gray-50 p-3 rounded-lg">
-            <div className="text-lg font-semibold">{layout.usableWidth.toFixed(1)} cm</div>
-            <div className="text-xs text-gray-600">Usable Width</div>
-          </div>
-          <div className="bg-gray-50 p-3 rounded-lg">
-            <div className="text-lg font-semibold">{layout.usableHeight.toFixed(1)} cm</div>
-            <div className="text-xs text-gray-600">Usable Height</div>
-          </div>
-        </div>
-
         {/* Visual Preview */}
         <div className="border rounded-lg p-4" style={{ backgroundColor: bgColor }}>
           <div className="text-center mb-4">

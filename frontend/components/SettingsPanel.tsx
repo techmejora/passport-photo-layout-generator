@@ -2,7 +2,10 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Settings } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Settings, Wand2 } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
+import backend from '~backend/client';
 import type { PhotoSettings } from '~backend/photo/settings';
 
 interface SettingsPanelProps {
@@ -10,9 +13,11 @@ interface SettingsPanelProps {
   paperSize: string;
   photoSize: string;
   backgroundColor: string;
+  selectedImage: string | null;
   onPaperSizeChange: (value: string) => void;
   onPhotoSizeChange: (value: string) => void;
   onBackgroundColorChange: (value: string) => void;
+  onImageUpdate: (imageData: string) => void;
 }
 
 export default function SettingsPanel({
@@ -20,10 +25,54 @@ export default function SettingsPanel({
   paperSize,
   photoSize,
   backgroundColor,
+  selectedImage,
   onPaperSizeChange,
   onPhotoSizeChange,
-  onBackgroundColorChange
+  onBackgroundColorChange,
+  onImageUpdate
 }: SettingsPanelProps) {
+  const { toast } = useToast();
+  const [isProcessing, setIsProcessing] = React.useState(false);
+
+  const removeBackground = React.useCallback(async () => {
+    if (!selectedImage) return;
+
+    setIsProcessing(true);
+    try {
+      const backgroundColors = {
+        white: '#FFFFFF',
+        'light-gray': '#F5F5F5',
+        blue: '#E3F2FD',
+        red: '#FFEBEE',
+        'light-blue': '#F0F8FF',
+        cream: '#FFFDD0'
+      };
+
+      const bgColor = backgroundColors[backgroundColor as keyof typeof backgroundColors] || '#FFFFFF';
+
+      const result = await backend.photo.removeBackground({
+        imageData: selectedImage,
+        backgroundColor: bgColor
+      });
+
+      onImageUpdate(result.processedImageData);
+
+      toast({
+        title: "Background Removed",
+        description: "Background has been removed and new color applied",
+      });
+    } catch (error) {
+      console.error('Failed to remove background:', error);
+      toast({
+        title: "Processing Failed",
+        description: "Failed to remove background. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  }, [selectedImage, backgroundColor, onImageUpdate, toast]);
+
   return (
     <Card>
       <CardHeader>
@@ -86,6 +135,29 @@ export default function SettingsPanel({
             </SelectContent>
           </Select>
         </div>
+
+        {selectedImage && (
+          <div className="space-y-2">
+            <Button
+              onClick={removeBackground}
+              disabled={isProcessing}
+              variant="outline"
+              className="w-full"
+            >
+              {isProcessing ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <Wand2 className="h-4 w-4 mr-2" />
+                  Remove Background
+                </>
+              )}
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

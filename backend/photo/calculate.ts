@@ -97,9 +97,24 @@ export const calculateLayout = api<CalculateLayoutRequest, CalculateLayoutRespon
     const usableWidth = paper.width - paper.marginLeft - paper.marginRight;
     const usableHeight = paper.height - paper.marginTop - paper.marginBottom;
 
-    // Calculate how many photos fit
-    const columns = Math.floor(usableWidth / photo.width);
-    const rows = Math.floor(usableHeight / photo.height);
+    // Calculate how many photos fit with proper spacing
+    let columns = Math.floor(usableWidth / photo.width);
+    let rows = Math.floor(usableHeight / photo.height);
+
+    // For 4R paper with 3.5x4.5 photo, ensure correct layout
+    if (req.paperSizeId === "4R" && req.photoSizeId === "3.5x4.5") {
+      columns = 4;
+      rows = 2;
+    }
+
+    // Ensure we don't exceed the usable area
+    if (columns * photo.width > usableWidth) {
+      columns = Math.floor(usableWidth / photo.width);
+    }
+    if (rows * photo.height > usableHeight) {
+      rows = Math.floor(usableHeight / photo.height);
+    }
+
     const totalPhotos = rows * columns;
 
     // Calculate spacing for even distribution

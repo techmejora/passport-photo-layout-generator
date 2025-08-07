@@ -63,6 +63,10 @@ export default function PhotoLayoutGenerator() {
     setSelectedImage(imageData);
   }, []);
 
+  const handleImageUpdate = useCallback((imageData: string) => {
+    setSelectedImage(imageData);
+  }, []);
+
   const handleGenerateLayout = async () => {
     if (!selectedImage) {
       toast({
@@ -120,24 +124,12 @@ export default function PhotoLayoutGenerator() {
       
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Upload and Settings */}
+          {/* Left Column - Upload */}
           <div className="lg:col-span-1 space-y-6">
             <PhotoUpload 
               onImageSelect={handleImageSelect} 
               backgroundColor={backgroundColor}
             />
-            
-            {settings && (
-              <SettingsPanel
-                settings={settings}
-                paperSize={paperSize}
-                photoSize={photoSize}
-                backgroundColor={backgroundColor}
-                onPaperSizeChange={setPaperSize}
-                onPhotoSizeChange={setPhotoSize}
-                onBackgroundColorChange={setBackgroundColor}
-              />
-            )}
           </div>
 
           {/* Right Column - Preview and Generate */}
@@ -148,6 +140,20 @@ export default function PhotoLayoutGenerator() {
                 selectedImage={selectedImage}
                 backgroundColor={backgroundColor}
                 isLoading={layoutLoading}
+              />
+            )}
+
+            {settings && (
+              <SettingsPanel
+                settings={settings}
+                paperSize={paperSize}
+                photoSize={photoSize}
+                backgroundColor={backgroundColor}
+                selectedImage={selectedImage}
+                onPaperSizeChange={setPaperSize}
+                onPhotoSizeChange={setPhotoSize}
+                onBackgroundColorChange={setBackgroundColor}
+                onImageUpdate={handleImageUpdate}
               />
             )}
 
