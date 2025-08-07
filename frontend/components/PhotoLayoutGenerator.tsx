@@ -9,6 +9,7 @@ import PhotoUpload from './PhotoUpload';
 import LayoutPreview from './LayoutPreview';
 import LayoutSpecifications from './LayoutSpecifications';
 import FeatureCards from './FeatureCards';
+import LoadingSpinner from './ui/LoadingSpinner';
 
 export default function PhotoLayoutGenerator() {
   const { toast } = useToast();
@@ -76,6 +77,15 @@ export default function PhotoLayoutGenerator() {
       return;
     }
 
+    if (!layout) {
+      toast({
+        title: "Layout Not Ready",
+        description: "Please wait for layout calculation to complete",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsGenerating(true);
     try {
       const result = await backend.photo.generateLayout({
@@ -83,8 +93,8 @@ export default function PhotoLayoutGenerator() {
         paperSize: paperSize as "3R" | "4R" | "5R" | "A4" | "A5" | "Letter" | "Legal",
         photoSize: photoSize as "3.5x4.5" | "2x2" | "35x45mm",
         backgroundColor,
-        rows: layout?.rows || 2,
-        columns: layout?.columns || 4
+        rows: layout.rows,
+        columns: layout.columns
       });
 
       toast({
@@ -109,10 +119,7 @@ export default function PhotoLayoutGenerator() {
   if (settingsLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading settings...</p>
-        </div>
+        <LoadingSpinner size="lg" text="Loading settings..." />
       </div>
     );
   }
@@ -144,22 +151,20 @@ export default function PhotoLayoutGenerator() {
 
           {/* Right Column - Preview */}
           <div className="space-y-6">
-            {layout && (
-              <LayoutPreview
-                layout={layout}
-                selectedImage={selectedImage}
-                backgroundColor={backgroundColor}
-                paperSize={paperSize}
-                photoSize={photoSize}
-                settings={settings}
-                isLoading={layoutLoading}
-                isGenerating={isGenerating}
-                onPaperSizeChange={setPaperSize}
-                onPhotoSizeChange={setPhotoSize}
-                onBackgroundColorChange={setBackgroundColor}
-                onGenerateLayout={handleGenerateLayout}
-              />
-            )}
+            <LayoutPreview
+              layout={layout}
+              selectedImage={selectedImage}
+              backgroundColor={backgroundColor}
+              paperSize={paperSize}
+              photoSize={photoSize}
+              settings={settings}
+              isLoading={layoutLoading}
+              isGenerating={isGenerating}
+              onPaperSizeChange={setPaperSize}
+              onPhotoSizeChange={setPhotoSize}
+              onBackgroundColorChange={setBackgroundColor}
+              onGenerateLayout={handleGenerateLayout}
+            />
           </div>
         </div>
 

@@ -1,9 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Upload, Camera, User } from 'lucide-react';
+import { Upload } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import backend from '~backend/client';
+import FileUploadZone from './ui/FileUploadZone';
+import ImagePreview from './ui/ImagePreview';
 
 interface PhotoUploadProps {
   onImageSelect: (imageData: string) => void;
@@ -19,61 +20,16 @@ export default function PhotoUpload({
   onImageUpdate 
 }: PhotoUploadProps) {
   const { toast } = useToast();
-  const [dragActive, setDragActive] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleFile = useCallback((file: File) => {
-    if (!file.type.startsWith('image/')) {
-      toast({
-        title: "Invalid File Type",
-        description: "Please select an image file (JPG, PNG, etc.)",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (file.size > 10 * 1024 * 1024) { // 10MB limit
-      toast({
-        title: "File Too Large",
-        description: "Please select an image smaller than 10MB",
-        variant: "destructive",
-      });
-      return;
-    }
-
     const reader = new FileReader();
     reader.onload = (e) => {
       const result = e.target?.result as string;
       onImageSelect(result);
     };
     reader.readAsDataURL(file);
-  }, [onImageSelect, toast]);
-
-  const handleDrag = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
-  }, []);
-
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFile(e.dataTransfer.files[0]);
-    }
-  }, [handleFile]);
-
-  const handleFileInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      handleFile(e.target.files[0]);
-    }
-  }, [handleFile]);
+  }, [onImageSelect]);
 
   const removeBackground = useCallback(async () => {
     if (!selectedImage) return;
@@ -114,6 +70,19 @@ export default function PhotoUpload({
     }
   }, [selectedImage, backgroundColor, onImageUpdate, toast]);
 
+  const handleReplace = useCallback(() => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        handleFile(file);
+      }
+    };
+    input.click();
+  }, [handleFile]);
+
   return (
     <Card>
       <CardHeader>
@@ -124,101 +93,15 @@ export default function PhotoUpload({
       </CardHeader>
       <CardContent>
         {selectedImage ? (
-          <div className="space-y-4">
-            <div className="relative">
-              <img
-                src={selectedImage}
-                alt="Selected"
-                className="w-full h-64 object-cover rounded-lg border-2 border-dashed border-gray-300"
-              />
-            </div>
-            
-            <div className="flex space-x-2">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileInput}
-                className="hidden"
-                id="file-upload-replace"
-              />
-              <Button asChild variant="outline" className="flex-1">
-                <label htmlFor="file-upload-replace" className="cursor-pointer">
-                  <Upload className="h-4 w-4 mr-2" />
-                  Browse Files
-                </label>
-              </Button>
-              <Button 
-                variant="outline" 
-                className="flex-1"
-                onClick={removeBackground}
-                disabled={isProcessing}
-              >
-                {isProcessing ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <Camera className="h-4 w-4 mr-2" />
-                    Take Photo
-                  </>
-                )}
-              </Button>
-            </div>
-            
-            <p className="text-xs text-gray-500 text-center">
-              Supported: JPG, PNG, WEBP up to 10MB<br />
-              Recommended: 300 DPI or higher
-            </p>
-          </div>
+          <ImagePreview
+            src={selectedImage}
+            alt="Selected photo"
+            onReplace={handleReplace}
+            onProcess={removeBackground}
+            isProcessing={isProcessing}
+          />
         ) : (
-          <div
-            className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${
-              dragActive
-                ? 'border-blue-500 bg-blue-50'
-                : 'border-gray-300 hover:border-gray-400'
-            }`}
-            onDragEnter={handleDrag}
-            onDragLeave={handleDrag}
-            onDragOver={handleDrag}
-            onDrop={handleDrop}
-          >
-            <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-              <Upload className="h-8 w-8 text-gray-400" />
-            </div>
-            <p className="text-lg font-medium text-gray-700 mb-2">
-              Drag and drop your photo here
-            </p>
-            <p className="text-sm text-gray-500 mb-6">
-              or click to browse
-            </p>
-            
-            <div className="flex space-x-2 justify-center">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileInput}
-                className="hidden"
-                id="file-upload"
-              />
-              <Button asChild className="bg-blue-600 hover:bg-blue-700">
-                <label htmlFor="file-upload" className="cursor-pointer">
-                  <Upload className="h-4 w-4 mr-2" />
-                  Browse Files
-                </label>
-              </Button>
-              <Button variant="outline">
-                <Camera className="h-4 w-4 mr-2" />
-                Take Photo
-              </Button>
-            </div>
-            
-            <p className="text-xs text-gray-400 mt-4">
-              Supported: JPG, PNG, WEBP up to 10MB<br />
-              Recommended: 300 DPI or higher
-            </p>
-          </div>
+          <FileUploadZone onFileSelect={handleFile} />
         )}
       </CardContent>
     </Card>
