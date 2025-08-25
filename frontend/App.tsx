@@ -8,6 +8,7 @@ import ImageResizerPage from './pages/ImageResizerPage';
 import ImageCropperPage from './pages/ImageCropperPage';
 import ImageEnhancerPage from './pages/ImageEnhancerPage';
 import VideoConverterPage from './pages/VideoConverterPage';
+import PvcCardMakerPage from './pages/PvcCardMakerPage';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
@@ -27,6 +28,7 @@ function App() {
               <Route path="/image-cropper" element={<ImageCropperPage />} />
               <Route path="/image-enhancer" element={<ImageEnhancerPage />} />
               <Route path="/video-converter" element={<VideoConverterPage />} />
+              <Route path="/pvc-card-maker" element={<PvcCardMakerPage />} />
             </Routes>
           </main>
           <Footer />

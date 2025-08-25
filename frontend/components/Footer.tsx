@@ -9,6 +9,7 @@ export default function Footer() {
     { name: 'Image Enhancer', href: '/image-enhancer' },
     { name: 'Passport Photo Maker', href: '/passport-photo' },
     { name: 'Video Converter', href: '/video-converter' },
+    { name: 'PVC Card Maker', href: '/pvc-card-maker' },
   ];
 
   const company = [

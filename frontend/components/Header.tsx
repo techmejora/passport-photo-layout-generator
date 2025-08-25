@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Camera, Menu, X, Crop, Maximize, Sparkles, CreditCard, Video } from 'lucide-react';
+import { Camera, Menu, X, Crop, Maximize, Sparkles, CreditCard, Video, IdCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function Header() {
@@ -14,6 +14,7 @@ export default function Header() {
     { name: 'Image Enhancer', href: '/image-enhancer', icon: Sparkles, color: 'from-purple-500 to-violet-500' },
     { name: 'Passport Photo', href: '/passport-photo', icon: Camera, color: 'from-orange-500 to-amber-500' },
     { name: 'Video Converter', href: '/video-converter', icon: Video, color: 'from-red-500 to-pink-500' },
+    { name: 'PVC Card Maker', href: '/pvc-card-maker', icon: IdCard, color: 'from-indigo-500 to-purple-500' },
   ];
 
   const isActive = (href: string) => location.pathname === href;

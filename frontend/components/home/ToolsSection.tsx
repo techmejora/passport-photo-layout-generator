@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Maximize, Crop, Sparkles, Camera, Video } from 'lucide-react';
+import { ArrowRight, Maximize, Crop, Sparkles, Camera, Video, IdCard } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -55,6 +55,16 @@ export default function ToolsSection() {
       bgGradient: 'from-red-50 to-pink-50',
       iconBg: 'from-red-600 to-pink-600',
       hoverShadow: 'hover:shadow-red-500/25'
+    },
+    {
+      icon: IdCard,
+      title: 'PVC Card Maker',
+      description: 'Design and create professional ID cards, business cards, and membership cards.',
+      href: '/pvc-card-maker',
+      gradient: 'from-indigo-500 via-purple-500 to-pink-500',
+      bgGradient: 'from-indigo-50 to-purple-50',
+      iconBg: 'from-indigo-600 to-purple-600',
+      hoverShadow: 'hover:shadow-indigo-500/25'
     }
   ];
 
