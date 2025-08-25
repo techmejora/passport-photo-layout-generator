@@ -2,8 +2,10 @@ import React, { useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sparkles, Download, Upload, RotateCcw, Sliders } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import backend from '~backend/client';
 import FileUploadZone from '../components/ui/FileUploadZone';
 import ImagePreview from '../components/ui/ImagePreview';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
@@ -11,11 +13,16 @@ import LoadingSpinner from '../components/ui/LoadingSpinner';
 export default function ImageEnhancerPage() {
   const { toast } = useToast();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [brightness, setBrightness] = useState(50);
-  const [contrast, setContrast] = useState(50);
-  const [saturation, setSaturation] = useState(50);
+  const [brightness, setBrightness] = useState(100);
+  const [contrast, setContrast] = useState(100);
+  const [saturation, setSaturation] = useState(100);
   const [sharpness, setSharpness] = useState(50);
+  const [hue, setHue] = useState(0);
+  const [gamma, setGamma] = useState(1.0);
+  const [quality, setQuality] = useState('90');
+  const [format, setFormat] = useState('jpeg');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [processedResult, setProcessedResult] = useState<any>(null);
 
   const handleFile = useCallback((file: File) => {
     const reader = new FileReader();
@@ -27,16 +34,36 @@ export default function ImageEnhancerPage() {
   }, []);
 
   const handleEnhance = async () => {
-    if (!selectedImage) return;
+    if (!selectedImage) {
+      toast({
+        title: "No Image Selected",
+        description: "Please select an image to enhance",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsProcessing(true);
     try {
-      // Simulate processing
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      const result = await backend.image.enhanceImage({
+        imageData: selectedImage,
+        adjustments: {
+          brightness,
+          contrast,
+          saturation,
+          sharpness,
+          hue,
+          gamma
+        },
+        quality: parseInt(quality),
+        format: format as "jpeg" | "png" | "webp"
+      });
+
+      setProcessedResult(result);
       
       toast({
-        title: "Image Enhanced",
-        description: "Image has been enhanced successfully",
+        title: "Image Enhanced Successfully",
+        description: "Your image has been enhanced with the selected adjustments",
       });
     } catch (error) {
       console.error('Failed to enhance image:', error);
@@ -52,10 +79,13 @@ export default function ImageEnhancerPage() {
 
   const handleReset = () => {
     setSelectedImage(null);
-    setBrightness(50);
-    setContrast(50);
-    setSaturation(50);
+    setBrightness(100);
+    setContrast(100);
+    setSaturation(100);
     setSharpness(50);
+    setHue(0);
+    setGamma(1.0);
+    setProcessedResult(null);
   };
 
   const handleReplace = useCallback(() => {
@@ -71,9 +101,53 @@ export default function ImageEnhancerPage() {
     input.click();
   }, [handleFile]);
 
+  const applyPreset = async (preset: string) => {
+    if (!selectedImage) return;
+
+    setIsProcessing(true);
+    try {
+      const result = await backend.image.enhanceImage({
+        imageData: selectedImage,
+        adjustments: {
+          brightness: 100,
+          contrast: 100,
+          saturation: 100,
+          sharpness: 50
+        },
+        preset: preset as "vibrant" | "vintage" | "portrait" | "landscape" | "bw" | "sepia",
+        quality: parseInt(quality),
+        format: format as "jpeg" | "png" | "webp"
+      });
+
+      setProcessedResult(result);
+      
+      // Update sliders to match applied adjustments
+      setBrightness(result.appliedAdjustments.brightness);
+      setContrast(result.appliedAdjustments.contrast);
+      setSaturation(result.appliedAdjustments.saturation);
+      setSharpness(result.appliedAdjustments.sharpness);
+      setHue(result.appliedAdjustments.hue);
+      setGamma(result.appliedAdjustments.gamma);
+      
+      toast({
+        title: "Preset Applied",
+        description: `${preset.charAt(0).toUpperCase() + preset.slice(1)} preset has been applied`,
+      });
+    } catch (error) {
+      console.error('Failed to apply preset:', error);
+      toast({
+        title: "Preset Failed",
+        description: "Failed to apply preset. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const getImageStyle = () => {
     return {
-      filter: `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%) blur(${100 - sharpness}px)`,
+      filter: `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%) hue-rotate(${hue}deg)`,
     };
   };
 
@@ -88,7 +162,7 @@ export default function ImageEnhancerPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Image Enhancer</h1>
         </div>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          Enhance your images with professional-grade adjustments. Improve brightness, contrast, saturation, and sharpness.
+          Enhance your images with professional-grade adjustments. Improve brightness, contrast, saturation, and more.
         </p>
       </div>
 
@@ -125,6 +199,43 @@ export default function ImageEnhancerPage() {
               )}
             </CardContent>
           </Card>
+
+          {processedResult && (
+            <Card className="border-0 shadow-xl bg-gradient-to-br from-green-50 to-emerald-50">
+              <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-t-lg">
+                <CardTitle>Enhancement Results</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <div className="font-medium text-gray-700">Brightness:</div>
+                      <div className="text-gray-600">{processedResult.appliedAdjustments.brightness}%</div>
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-700">Contrast:</div>
+                      <div className="text-gray-600">{processedResult.appliedAdjustments.contrast}%</div>
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-700">Saturation:</div>
+                      <div className="text-gray-600">{processedResult.appliedAdjustments.saturation}%</div>
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-700">Sharpness:</div>
+                      <div className="text-gray-600">{processedResult.appliedAdjustments.sharpness}%</div>
+                    </div>
+                  </div>
+                  <Button 
+                    onClick={() => window.open(processedResult.downloadUrl, '_blank')}
+                    className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Download Enhanced Image
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         {/* Settings Section */}
@@ -197,6 +308,47 @@ export default function ImageEnhancerPage() {
                     className="w-full accent-purple-600"
                   />
                 </div>
+
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <Label>Hue</Label>
+                    <span className="text-sm text-gray-500">{hue}°</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="-180"
+                    max="180"
+                    value={hue}
+                    onChange={(e) => setHue(parseInt(e.target.value))}
+                    className="w-full accent-purple-600"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Output Format</Label>
+                <Select value={format} onValueChange={setFormat}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="jpeg">JPEG</SelectItem>
+                    <SelectItem value="png">PNG</SelectItem>
+                    <SelectItem value="webp">WebP</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Quality ({quality}%)</Label>
+                <input
+                  type="range"
+                  min="10"
+                  max="100"
+                  value={quality}
+                  onChange={(e) => setQuality(e.target.value)}
+                  className="w-full accent-purple-600"
+                />
               </div>
 
               <div className="space-y-4">
@@ -206,12 +358,8 @@ export default function ImageEnhancerPage() {
                     variant="outline" 
                     size="sm"
                     className="border-purple-200 hover:bg-purple-50"
-                    onClick={() => {
-                      setBrightness(110);
-                      setContrast(120);
-                      setSaturation(110);
-                      setSharpness(70);
-                    }}
+                    onClick={() => applyPreset('vibrant')}
+                    disabled={!selectedImage || isProcessing}
                   >
                     Vibrant
                   </Button>
@@ -219,12 +367,8 @@ export default function ImageEnhancerPage() {
                     variant="outline" 
                     size="sm"
                     className="border-purple-200 hover:bg-purple-50"
-                    onClick={() => {
-                      setBrightness(90);
-                      setContrast(80);
-                      setSaturation(70);
-                      setSharpness(60);
-                    }}
+                    onClick={() => applyPreset('vintage')}
+                    disabled={!selectedImage || isProcessing}
                   >
                     Vintage
                   </Button>
@@ -232,12 +376,8 @@ export default function ImageEnhancerPage() {
                     variant="outline" 
                     size="sm"
                     className="border-purple-200 hover:bg-purple-50"
-                    onClick={() => {
-                      setBrightness(120);
-                      setContrast(110);
-                      setSaturation(120);
-                      setSharpness(80);
-                    }}
+                    onClick={() => applyPreset('portrait')}
+                    disabled={!selectedImage || isProcessing}
                   >
                     Portrait
                   </Button>
@@ -245,14 +385,28 @@ export default function ImageEnhancerPage() {
                     variant="outline" 
                     size="sm"
                     className="border-purple-200 hover:bg-purple-50"
-                    onClick={() => {
-                      setBrightness(105);
-                      setContrast(115);
-                      setSaturation(130);
-                      setSharpness(75);
-                    }}
+                    onClick={() => applyPreset('landscape')}
+                    disabled={!selectedImage || isProcessing}
                   >
                     Landscape
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="border-purple-200 hover:bg-purple-50"
+                    onClick={() => applyPreset('bw')}
+                    disabled={!selectedImage || isProcessing}
+                  >
+                    Black & White
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="border-purple-200 hover:bg-purple-50"
+                    onClick={() => applyPreset('sepia')}
+                    disabled={!selectedImage || isProcessing}
+                  >
+                    Sepia
                   </Button>
                 </div>
               </div>
@@ -275,7 +429,7 @@ export default function ImageEnhancerPage() {
                   ) : (
                     <>
                       <Download className="h-4 w-4 mr-2" />
-                      Enhance & Download
+                      Enhance Image
                     </>
                   )}
                 </Button>

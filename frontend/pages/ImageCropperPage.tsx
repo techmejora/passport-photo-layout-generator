@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Crop, Download, Upload, RotateCcw, Square, Circle } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import backend from '~backend/client';
 import FileUploadZone from '../components/ui/FileUploadZone';
 import ImagePreview from '../components/ui/ImagePreview';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
@@ -14,7 +15,10 @@ export default function ImageCropperPage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [cropShape, setCropShape] = useState('rectangle');
   const [aspectRatio, setAspectRatio] = useState('free');
+  const [quality, setQuality] = useState('90');
+  const [format, setFormat] = useState('jpeg');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [processedResult, setProcessedResult] = useState<any>(null);
 
   const handleFile = useCallback((file: File) => {
     const reader = new FileReader();
@@ -26,16 +30,39 @@ export default function ImageCropperPage() {
   }, []);
 
   const handleCrop = async () => {
-    if (!selectedImage) return;
+    if (!selectedImage) {
+      toast({
+        title: "No Image Selected",
+        description: "Please select an image to crop",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsProcessing(true);
     try {
-      // Simulate processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Mock crop area - in real implementation, this would come from a crop selection UI
+      const cropArea = {
+        x: 100,
+        y: 100,
+        width: 400,
+        height: 300
+      };
+
+      const result = await backend.image.cropImage({
+        imageData: selectedImage,
+        cropArea,
+        shape: cropShape as "rectangle" | "circle",
+        aspectRatio: aspectRatio === 'free' ? undefined : aspectRatio,
+        quality: parseInt(quality),
+        format: format as "jpeg" | "png" | "webp"
+      });
+
+      setProcessedResult(result);
       
       toast({
-        title: "Image Cropped",
-        description: "Image has been cropped successfully",
+        title: "Image Cropped Successfully",
+        description: `Image cropped to ${result.croppedSize.width}x${result.croppedSize.height} pixels`,
       });
     } catch (error) {
       console.error('Failed to crop image:', error);
@@ -51,6 +78,7 @@ export default function ImageCropperPage() {
 
   const handleReset = () => {
     setSelectedImage(null);
+    setProcessedResult(null);
   };
 
   const handleReplace = useCallback(() => {
@@ -120,6 +148,35 @@ export default function ImageCropperPage() {
               )}
             </CardContent>
           </Card>
+
+          {processedResult && (
+            <Card className="border-0 shadow-xl bg-gradient-to-br from-blue-50 to-cyan-50">
+              <CardHeader className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-t-lg">
+                <CardTitle>Cropping Results</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <div className="font-medium text-gray-700">Cropped Size:</div>
+                      <div className="text-gray-600">{processedResult.croppedSize.width} × {processedResult.croppedSize.height} px</div>
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-700">Original Size:</div>
+                      <div className="text-gray-600">{processedResult.originalSize.width} × {processedResult.originalSize.height} px</div>
+                    </div>
+                  </div>
+                  <Button 
+                    onClick={() => window.open(processedResult.downloadUrl, '_blank')}
+                    className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Download Cropped Image
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         {/* Settings Section */}
@@ -169,13 +226,67 @@ export default function ImageCropperPage() {
                 </Select>
               </div>
 
+              <div className="space-y-2">
+                <Label>Output Format</Label>
+                <Select value={format} onValueChange={setFormat}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="jpeg">JPEG</SelectItem>
+                    <SelectItem value="png">PNG</SelectItem>
+                    <SelectItem value="webp">WebP</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Quality ({quality}%)</Label>
+                <input
+                  type="range"
+                  min="10"
+                  max="100"
+                  value={quality}
+                  onChange={(e) => setQuality(e.target.value)}
+                  className="w-full accent-green-600"
+                />
+              </div>
+
               <div className="space-y-4">
                 <h4 className="font-medium">Quick Presets</h4>
                 <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" size="sm" className="border-green-200 hover:bg-green-50">Instagram Post</Button>
-                  <Button variant="outline" size="sm" className="border-green-200 hover:bg-green-50">Instagram Story</Button>
-                  <Button variant="outline" size="sm" className="border-green-200 hover:bg-green-50">Facebook Cover</Button>
-                  <Button variant="outline" size="sm" className="border-green-200 hover:bg-green-50">Twitter Header</Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="border-green-200 hover:bg-green-50"
+                    onClick={() => setAspectRatio('1:1')}
+                  >
+                    Instagram Post
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="border-green-200 hover:bg-green-50"
+                    onClick={() => setAspectRatio('9:16')}
+                  >
+                    Instagram Story
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="border-green-200 hover:bg-green-50"
+                    onClick={() => setAspectRatio('16:9')}
+                  >
+                    Facebook Cover
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="border-green-200 hover:bg-green-50"
+                    onClick={() => setAspectRatio('3:1')}
+                  >
+                    Twitter Header
+                  </Button>
                 </div>
               </div>
 
@@ -197,7 +308,7 @@ export default function ImageCropperPage() {
                   ) : (
                     <>
                       <Download className="h-4 w-4 mr-2" />
-                      Crop & Download
+                      Crop Image
                     </>
                   )}
                 </Button>

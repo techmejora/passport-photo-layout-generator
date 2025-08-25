@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Camera, Menu, X, Crop, Maximize, Sparkles, CreditCard } from 'lucide-react';
+import { Camera, Menu, X, Crop, Maximize, Sparkles, CreditCard, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function Header() {
@@ -13,6 +13,7 @@ export default function Header() {
     { name: 'Image Cropper', href: '/image-cropper', icon: Crop, color: 'from-green-500 to-emerald-500' },
     { name: 'Image Enhancer', href: '/image-enhancer', icon: Sparkles, color: 'from-purple-500 to-violet-500' },
     { name: 'Passport Photo', href: '/passport-photo', icon: Camera, color: 'from-orange-500 to-amber-500' },
+    { name: 'Video Converter', href: '/video-converter', icon: Video, color: 'from-red-500 to-pink-500' },
   ];
 
   const isActive = (href: string) => location.pathname === href;
@@ -31,7 +32,7 @@ export default function Header() {
                 AutoImageResizer
               </h1>
               <p className="text-xs text-purple-100 hidden sm:block">
-                Professional Image Processing Tools
+                Professional Image & Video Processing Tools
               </p>
             </div>
           </Link>

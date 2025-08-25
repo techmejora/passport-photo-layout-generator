@@ -33,7 +33,9 @@ const BROWSER = typeof globalThis === "object" && ("window" in globalThis);
  * Client is an API client for the  Encore application.
  */
 export class Client {
+    public readonly image: image.ServiceClient
     public readonly photo: photo.ServiceClient
+    public readonly video: video.ServiceClient
     private readonly options: ClientOptions
     private readonly target: string
 
@@ -48,7 +50,9 @@ export class Client {
         this.target = target
         this.options = options ?? {}
         const base = new BaseClient(this.target, this.options)
+        this.image = new image.ServiceClient(base)
         this.photo = new photo.ServiceClient(base)
+        this.video = new video.ServiceClient(base)
     }
 
     /**
@@ -77,6 +81,54 @@ export interface ClientOptions {
 
     /** Default RequestInit to be used for the client */
     requestInit?: Omit<RequestInit, "headers"> & { headers?: Record<string, string> }
+}
+
+/**
+ * Import the endpoint handlers to derive the types for the client.
+ */
+import { cropImage as api_image_crop_cropImage } from "~backend/image/crop";
+import { enhanceImage as api_image_enhance_enhanceImage } from "~backend/image/enhance";
+import { resizeImage as api_image_resize_resizeImage } from "~backend/image/resize";
+
+export namespace image {
+
+    export class ServiceClient {
+        private baseClient: BaseClient
+
+        constructor(baseClient: BaseClient) {
+            this.baseClient = baseClient
+            this.cropImage = this.cropImage.bind(this)
+            this.enhanceImage = this.enhanceImage.bind(this)
+            this.resizeImage = this.resizeImage.bind(this)
+        }
+
+        /**
+         * Crops an image to specified area and shape
+         */
+        public async cropImage(params: RequestType<typeof api_image_crop_cropImage>): Promise<ResponseType<typeof api_image_crop_cropImage>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/image/crop`, {method: "POST", body: JSON.stringify(params)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_image_crop_cropImage>
+        }
+
+        /**
+         * Enhances an image with various adjustments
+         */
+        public async enhanceImage(params: RequestType<typeof api_image_enhance_enhanceImage>): Promise<ResponseType<typeof api_image_enhance_enhanceImage>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/image/enhance`, {method: "POST", body: JSON.stringify(params)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_image_enhance_enhanceImage>
+        }
+
+        /**
+         * Resizes an image to specified dimensions
+         */
+        public async resizeImage(params: RequestType<typeof api_image_resize_resizeImage>): Promise<ResponseType<typeof api_image_resize_resizeImage>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/image/resize`, {method: "POST", body: JSON.stringify(params)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_image_resize_resizeImage>
+        }
+    }
 }
 
 /**
@@ -134,6 +186,54 @@ export namespace photo {
             // Now make the actual call to the API
             const resp = await this.baseClient.callTypedAPI(`/photo/remove-background`, {method: "POST", body: JSON.stringify(params)})
             return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_photo_remove_background_removeBackground>
+        }
+    }
+}
+
+/**
+ * Import the endpoint handlers to derive the types for the client.
+ */
+import { compressVideo as api_video_compress_compressVideo } from "~backend/video/compress";
+import { convertVideo as api_video_convert_convertVideo } from "~backend/video/convert";
+import { extractAudio as api_video_extract_audio_extractAudio } from "~backend/video/extract-audio";
+
+export namespace video {
+
+    export class ServiceClient {
+        private baseClient: BaseClient
+
+        constructor(baseClient: BaseClient) {
+            this.baseClient = baseClient
+            this.compressVideo = this.compressVideo.bind(this)
+            this.convertVideo = this.convertVideo.bind(this)
+            this.extractAudio = this.extractAudio.bind(this)
+        }
+
+        /**
+         * Compresses video to reduce file size
+         */
+        public async compressVideo(params: RequestType<typeof api_video_compress_compressVideo>): Promise<ResponseType<typeof api_video_compress_compressVideo>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/video/compress`, {method: "POST", body: JSON.stringify(params)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_video_compress_compressVideo>
+        }
+
+        /**
+         * Converts video to specified format and settings
+         */
+        public async convertVideo(params: RequestType<typeof api_video_convert_convertVideo>): Promise<ResponseType<typeof api_video_convert_convertVideo>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/video/convert`, {method: "POST", body: JSON.stringify(params)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_video_convert_convertVideo>
+        }
+
+        /**
+         * Extracts audio from video file
+         */
+        public async extractAudio(params: RequestType<typeof api_video_extract_audio_extractAudio>): Promise<ResponseType<typeof api_video_extract_audio_extractAudio>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/video/extract-audio`, {method: "POST", body: JSON.stringify(params)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_video_extract_audio_extractAudio>
         }
     }
 }

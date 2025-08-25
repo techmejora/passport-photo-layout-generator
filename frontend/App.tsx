@@ -7,6 +7,7 @@ import PassportPhotoPage from './pages/PassportPhotoPage';
 import ImageResizerPage from './pages/ImageResizerPage';
 import ImageCropperPage from './pages/ImageCropperPage';
 import ImageEnhancerPage from './pages/ImageEnhancerPage';
+import VideoConverterPage from './pages/VideoConverterPage';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
@@ -25,6 +26,7 @@ function App() {
               <Route path="/image-resizer" element={<ImageResizerPage />} />
               <Route path="/image-cropper" element={<ImageCropperPage />} />
               <Route path="/image-enhancer" element={<ImageEnhancerPage />} />
+              <Route path="/video-converter" element={<VideoConverterPage />} />
             </Routes>
           </main>
           <Footer />

@@ -4,8 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Maximize, Download, Upload, RotateCcw } from 'lucide-react';
+import { Maximize, Download, Upload, RotateCcw, ExternalLink } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import backend from '~backend/client';
 import FileUploadZone from '../components/ui/FileUploadZone';
 import ImagePreview from '../components/ui/ImagePreview';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
@@ -19,7 +20,9 @@ export default function ImageResizerPage() {
   const [maintainAspectRatio, setMaintainAspectRatio] = useState(true);
   const [resizeMode, setResizeMode] = useState('pixels');
   const [quality, setQuality] = useState('90');
+  const [format, setFormat] = useState('jpeg');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [processedResult, setProcessedResult] = useState<any>(null);
 
   const handleFile = useCallback((file: File) => {
     const reader = new FileReader();
@@ -56,16 +59,31 @@ export default function ImageResizerPage() {
   };
 
   const handleResize = async () => {
-    if (!selectedImage) return;
+    if (!selectedImage || !newWidth || !newHeight) {
+      toast({
+        title: "Missing Information",
+        description: "Please select an image and specify dimensions",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsProcessing(true);
     try {
-      // Simulate processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const result = await backend.image.resizeImage({
+        imageData: selectedImage,
+        width: parseInt(newWidth),
+        height: parseInt(newHeight),
+        maintainAspectRatio,
+        quality: parseInt(quality),
+        format: format as "jpeg" | "png" | "webp"
+      });
+
+      setProcessedResult(result);
       
       toast({
-        title: "Image Resized",
-        description: `Image resized to ${newWidth}x${newHeight} pixels`,
+        title: "Image Resized Successfully",
+        description: `Image resized to ${result.newSize.width}x${result.newSize.height} pixels`,
       });
     } catch (error) {
       console.error('Failed to resize image:', error);
@@ -84,6 +102,7 @@ export default function ImageResizerPage() {
     setOriginalDimensions({ width: 0, height: 0 });
     setNewWidth('');
     setNewHeight('');
+    setProcessedResult(null);
   };
 
   const handleReplace = useCallback(() => {
@@ -98,6 +117,14 @@ export default function ImageResizerPage() {
     };
     input.click();
   }, [handleFile]);
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 bg-gradient-to-br from-blue-50 to-cyan-50 min-h-screen">
@@ -152,6 +179,35 @@ export default function ImageResizerPage() {
                     <div className="font-medium text-gray-700">Height:</div>
                     <div className="text-gray-600">{originalDimensions.height} px</div>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {processedResult && (
+            <Card className="border-0 shadow-xl bg-gradient-to-br from-green-50 to-emerald-50">
+              <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-t-lg">
+                <CardTitle>Processing Results</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <div className="font-medium text-gray-700">New Size:</div>
+                      <div className="text-gray-600">{processedResult.newSize.width} × {processedResult.newSize.height} px</div>
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-700">File Size:</div>
+                      <div className="text-gray-600">{formatFileSize(processedResult.newSize.fileSize)}</div>
+                    </div>
+                  </div>
+                  <Button 
+                    onClick={() => window.open(processedResult.downloadUrl, '_blank')}
+                    className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Download Resized Image
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -214,6 +270,20 @@ export default function ImageResizerPage() {
               </div>
 
               <div className="space-y-2">
+                <Label>Output Format</Label>
+                <Select value={format} onValueChange={setFormat}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="jpeg">JPEG</SelectItem>
+                    <SelectItem value="png">PNG</SelectItem>
+                    <SelectItem value="webp">WebP</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
                 <Label>Quality ({quality}%)</Label>
                 <input
                   type="range"
@@ -223,6 +293,56 @@ export default function ImageResizerPage() {
                   onChange={(e) => setQuality(e.target.value)}
                   className="w-full accent-blue-600"
                 />
+              </div>
+
+              <div className="space-y-4">
+                <h4 className="font-medium">Quick Presets</h4>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="border-blue-200 hover:bg-blue-50"
+                    onClick={() => {
+                      setNewWidth('1920');
+                      setNewHeight('1080');
+                    }}
+                  >
+                    Full HD
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="border-blue-200 hover:bg-blue-50"
+                    onClick={() => {
+                      setNewWidth('1280');
+                      setNewHeight('720');
+                    }}
+                  >
+                    HD
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="border-blue-200 hover:bg-blue-50"
+                    onClick={() => {
+                      setNewWidth('800');
+                      setNewHeight('600');
+                    }}
+                  >
+                    Web
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="border-blue-200 hover:bg-blue-50"
+                    onClick={() => {
+                      setNewWidth('400');
+                      setNewHeight('400');
+                    }}
+                  >
+                    Thumbnail
+                  </Button>
+                </div>
               </div>
 
               <div className="flex space-x-3">
@@ -243,7 +363,7 @@ export default function ImageResizerPage() {
                   ) : (
                     <>
                       <Download className="h-4 w-4 mr-2" />
-                      Resize & Download
+                      Resize Image
                     </>
                   )}
                 </Button>

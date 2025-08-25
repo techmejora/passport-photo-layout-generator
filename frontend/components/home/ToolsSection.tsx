@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Maximize, Crop, Sparkles, Camera } from 'lucide-react';
+import { ArrowRight, Maximize, Crop, Sparkles, Camera, Video } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -45,6 +45,16 @@ export default function ToolsSection() {
       bgGradient: 'from-orange-50 to-amber-50',
       iconBg: 'from-orange-600 to-amber-600',
       hoverShadow: 'hover:shadow-orange-500/25'
+    },
+    {
+      icon: Video,
+      title: 'Video Converter',
+      description: 'Convert videos to any format, compress, and extract audio with ease.',
+      href: '/video-converter',
+      gradient: 'from-red-500 via-pink-500 to-rose-500',
+      bgGradient: 'from-red-50 to-pink-50',
+      iconBg: 'from-red-600 to-pink-600',
+      hoverShadow: 'hover:shadow-red-500/25'
     }
   ];
 
@@ -53,15 +63,15 @@ export default function ToolsSection() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
-            Powerful Image Processing Tools
+            Powerful Media Processing Tools
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Everything you need to process, edit, and optimize your images. 
+            Everything you need to process, edit, and optimize your images and videos. 
             Professional results with just a few clicks.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {tools.map((tool, index) => {
             const Icon = tool.icon;
             return (

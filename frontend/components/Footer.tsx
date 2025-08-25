@@ -8,6 +8,7 @@ export default function Footer() {
     { name: 'Image Cropper', href: '/image-cropper' },
     { name: 'Image Enhancer', href: '/image-enhancer' },
     { name: 'Passport Photo Maker', href: '/passport-photo' },
+    { name: 'Video Converter', href: '/video-converter' },
   ];
 
   const company = [
@@ -33,7 +34,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Professional image processing tools for resizing, cropping, enhancing, and creating passport photos. Fast, secure, and easy to use.
+              Professional image and video processing tools for resizing, cropping, enhancing, and converting. Fast, secure, and easy to use.
             </p>
           </div>
 
