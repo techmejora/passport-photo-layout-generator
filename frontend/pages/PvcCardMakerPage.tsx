@@ -6,14 +6,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { IdCard, Download, Upload, RotateCcw, Eye, Palette, CreditCard, User, GraduationCap, Building, Users } from 'lucide-react';
+import { IdCard, Download, Upload, RotateCcw, Eye, Palette, CreditCard, User, GraduationCap, Building, Users, Layout } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import backend from '~backend/client';
 import FileUploadZone from '../components/ui/FileUploadZone';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
+import CardLayoutGenerator from '../components/CardLayoutGenerator';
 
 export default function PvcCardMakerPage() {
   const { toast } = useToast();
+  const [activeMode, setActiveMode] = useState('create'); // 'create' or 'layout'
   const [selectedTemplate, setSelectedTemplate] = useState('modern-id');
   const [cardType, setCardType] = useState('id');
   const [cardSize, setCardSize] = useState('cr80');
@@ -227,6 +229,11 @@ export default function PvcCardMakerPage() {
     );
   }
 
+  // If layout mode is selected, show the CardLayoutGenerator
+  if (activeMode === 'layout') {
+    return <CardLayoutGenerator />;
+  }
+
   const selectedTemplateData = templates?.templates.find(t => t.id === selectedTemplate);
 
   return (
@@ -242,6 +249,28 @@ export default function PvcCardMakerPage() {
         <p className="text-gray-600 max-w-2xl mx-auto">
           Design and create professional ID cards, business cards, and membership cards with custom layouts and branding.
         </p>
+      </div>
+
+      {/* Mode Selection */}
+      <div className="flex justify-center mb-8">
+        <div className="bg-white rounded-lg p-1 shadow-lg">
+          <Button
+            variant={activeMode === 'create' ? 'default' : 'ghost'}
+            onClick={() => setActiveMode('create')}
+            className={activeMode === 'create' ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white' : ''}
+          >
+            <IdCard className="h-4 w-4 mr-2" />
+            Create New Card
+          </Button>
+          <Button
+            variant={activeMode === 'layout' ? 'default' : 'ghost'}
+            onClick={() => setActiveMode('layout')}
+            className={activeMode === 'layout' ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white' : ''}
+          >
+            <Layout className="h-4 w-4 mr-2" />
+            Layout Existing Cards
+          </Button>
+        </div>
       </div>
 
       {/* Template Selection */}

@@ -89,6 +89,7 @@ export interface ClientOptions {
  * Import the endpoint handlers to derive the types for the client.
  */
 import { generateCard as api_card_generate_generateCard } from "~backend/card/generate";
+import { generateCardLayout as api_card_layout_generateCardLayout } from "~backend/card/layout";
 import { getTemplates as api_card_templates_getTemplates } from "~backend/card/templates";
 
 export namespace card {
@@ -99,6 +100,7 @@ export namespace card {
         constructor(baseClient: BaseClient) {
             this.baseClient = baseClient
             this.generateCard = this.generateCard.bind(this)
+            this.generateCardLayout = this.generateCardLayout.bind(this)
             this.getTemplates = this.getTemplates.bind(this)
         }
 
@@ -109,6 +111,15 @@ export namespace card {
             // Now make the actual call to the API
             const resp = await this.baseClient.callTypedAPI(`/card/generate`, {method: "POST", body: JSON.stringify(params)})
             return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_card_generate_generateCard>
+        }
+
+        /**
+         * Generates a layout for existing PVC cards on photo paper
+         */
+        public async generateCardLayout(params: RequestType<typeof api_card_layout_generateCardLayout>): Promise<ResponseType<typeof api_card_layout_generateCardLayout>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/card/layout`, {method: "POST", body: JSON.stringify(params)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_card_layout_generateCardLayout>
         }
 
         /**
