@@ -118,6 +118,30 @@ export default function CardLayoutGenerator() {
 
   const totalCards = cardsPerRow * cardsPerColumn;
 
+  // Function to determine card arrangement for preview
+  const getCardArrangement = () => {
+    const cards = [];
+    for (let row = 0; row < cardsPerColumn; row++) {
+      for (let col = 0; col < cardsPerRow; col++) {
+        let isBackCard = false;
+        let cardImage = frontCardImage;
+        
+        if (paperSize === '4x6' && backCardImage) {
+          // For 4x6: top row = front, bottom row = back
+          isBackCard = row === 1;
+          cardImage = isBackCard ? backCardImage : frontCardImage;
+        } else if (backCardImage) {
+          // For other sizes: alternate by column
+          isBackCard = col % 2 === 1;
+          cardImage = isBackCard ? backCardImage : frontCardImage;
+        }
+        
+        cards.push({ cardImage, isBackCard, index: row * cardsPerRow + col });
+      }
+    }
+    return cards;
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 bg-gradient-to-br from-teal-50 to-cyan-50 min-h-screen">
       {/* Header */}
@@ -238,26 +262,30 @@ export default function CardLayoutGenerator() {
                         gridTemplateColumns: `repeat(${cardsPerRow}, 1fr)`
                       }}
                     >
-                      {Array.from({ length: totalCards }).map((_, index) => {
-                        const isBackCard = backCardImage && (index % 2 === 1);
-                        const cardImage = isBackCard ? backCardImage : frontCardImage;
-                        return (
-                          <div
-                            key={index}
-                            className="border border-gray-300 rounded-sm overflow-hidden bg-gray-50 flex items-center justify-center"
-                          >
-                            <img
-                              src={cardImage}
-                              alt={`Card ${index + 1}`}
-                              className="w-full h-full object-cover"
-                            />
+                      {getCardArrangement().map((card) => (
+                        <div
+                          key={card.index}
+                          className="border border-gray-300 rounded-sm overflow-hidden bg-gray-50 flex items-center justify-center relative"
+                        >
+                          <img
+                            src={card.cardImage}
+                            alt={`Card ${card.index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs text-center py-1">
+                            {card.isBackCard ? 'BACK' : 'FRONT'}
                           </div>
-                        );
-                      })}
+                        </div>
+                      ))}
                     </div>
                   </div>
                   <p className="text-center text-sm text-gray-500 mt-2">
                     {totalCards} cards on {paperSize} paper
+                    {paperSize === '4x6' && backCardImage && (
+                      <span className="block text-xs text-blue-600 mt-1">
+                        Top row: Front cards, Bottom row: Back cards
+                      </span>
+                    )}
                   </p>
                 </div>
               </CardContent>
@@ -429,7 +457,14 @@ export default function CardLayoutGenerator() {
                   <div>Total Cards: {totalCards}</div>
                   <div>Grid: {cardsPerRow} × {cardsPerColumn}</div>
                   <div>Spacing: {spacing}mm</div>
-                  {backCardImage && <div>Front/Back: Alternating pattern</div>}
+                  {backCardImage && (
+                    <div>
+                      {paperSize === '4x6' 
+                        ? 'Layout: Top row (Front), Bottom row (Back)' 
+                        : 'Layout: Alternating Front/Back by column'
+                      }
+                    </div>
+                  )}
                 </div>
               </div>
             </CardContent>

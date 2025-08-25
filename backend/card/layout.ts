@@ -113,10 +113,23 @@ function generateCardLayoutHtml(
       const x = startX + col * (totalCardWidth + req.spacing);
       const y = startY + row * (totalCardHeight + req.spacing);
       
-      // Determine if this should be front or back card
-      const isBackCard = req.backCardImage && (col % 2 === 1); // Alternate front/back
-      const cardImage = isBackCard ? req.backCardImage : req.frontCardImage;
-      const cardLabel = isBackCard ? 'BACK' : 'FRONT';
+      // For 4x6 paper: top row = front cards, bottom row = back cards
+      // For other layouts: alternate front/back by column
+      let isBackCard = false;
+      let cardImage = req.frontCardImage;
+      let cardLabel = 'FRONT';
+      
+      if (req.paperSize === '4x6' && req.backCardImage) {
+        // For 4x6: top row (row 0) = front, bottom row (row 1) = back
+        isBackCard = row === 1;
+        cardImage = isBackCard ? req.backCardImage : req.frontCardImage;
+        cardLabel = isBackCard ? 'BACK' : 'FRONT';
+      } else if (req.backCardImage) {
+        // For other paper sizes: alternate by column
+        isBackCard = col % 2 === 1;
+        cardImage = isBackCard ? req.backCardImage : req.frontCardImage;
+        cardLabel = isBackCard ? 'BACK' : 'FRONT';
+      }
       
       cardGrid += `
         <div class="card-item" style="
@@ -351,7 +364,8 @@ function generateCardLayoutHtml(
     <div class="info-header">
       PVC Card Layout - ${req.paperSize} Paper | Card Size: ${req.cardSize} | 
       Grid: ${req.cardsPerRow} × ${req.cardsPerColumn} = ${req.cardsPerRow * req.cardsPerColumn} cards | 
-      Spacing: ${req.spacing}mm | ${req.bleedArea ? 'With' : 'Without'} bleed area | Print at 100% scale
+      Spacing: ${req.spacing}mm | ${req.bleedArea ? 'With' : 'Without'} bleed area | 
+      ${req.paperSize === '4x6' && req.backCardImage ? 'Top: Front Cards, Bottom: Back Cards' : 'Alternating Front/Back'} | Print at 100% scale
     </div>
     
     <!-- Paper border (hidden in print) -->
