@@ -33,6 +33,7 @@ const BROWSER = typeof globalThis === "object" && ("window" in globalThis);
  * Client is an API client for the  Encore application.
  */
 export class Client {
+    public readonly card: card.ServiceClient
     public readonly image: image.ServiceClient
     public readonly photo: photo.ServiceClient
     public readonly video: video.ServiceClient
@@ -50,6 +51,7 @@ export class Client {
         this.target = target
         this.options = options ?? {}
         const base = new BaseClient(this.target, this.options)
+        this.card = new card.ServiceClient(base)
         this.image = new image.ServiceClient(base)
         this.photo = new photo.ServiceClient(base)
         this.video = new video.ServiceClient(base)
@@ -81,6 +83,43 @@ export interface ClientOptions {
 
     /** Default RequestInit to be used for the client */
     requestInit?: Omit<RequestInit, "headers"> & { headers?: Record<string, string> }
+}
+
+/**
+ * Import the endpoint handlers to derive the types for the client.
+ */
+import { generateCard as api_card_generate_generateCard } from "~backend/card/generate";
+import { getTemplates as api_card_templates_getTemplates } from "~backend/card/templates";
+
+export namespace card {
+
+    export class ServiceClient {
+        private baseClient: BaseClient
+
+        constructor(baseClient: BaseClient) {
+            this.baseClient = baseClient
+            this.generateCard = this.generateCard.bind(this)
+            this.getTemplates = this.getTemplates.bind(this)
+        }
+
+        /**
+         * Generates a PVC card layout for printing
+         */
+        public async generateCard(params: RequestType<typeof api_card_generate_generateCard>): Promise<ResponseType<typeof api_card_generate_generateCard>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/card/generate`, {method: "POST", body: JSON.stringify(params)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_card_generate_generateCard>
+        }
+
+        /**
+         * Gets available card templates and settings
+         */
+        public async getTemplates(): Promise<ResponseType<typeof api_card_templates_getTemplates>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/card/templates`, {method: "GET", body: undefined})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_card_templates_getTemplates>
+        }
+    }
 }
 
 /**
