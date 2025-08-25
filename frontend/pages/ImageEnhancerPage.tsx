@@ -101,6 +101,10 @@ export default function ImageEnhancerPage() {
     input.click();
   }, [handleFile]);
 
+  const handleRotate = useCallback((rotatedImageData: string) => {
+    setSelectedImage(rotatedImageData);
+  }, []);
+
   const applyPreset = async (preset: string) => {
     if (!selectedImage) return;
 
@@ -191,6 +195,10 @@ export default function ImageEnhancerPage() {
                     <Button variant="outline" className="flex-1 border-purple-200 hover:bg-purple-50" onClick={handleReplace}>
                       <Upload className="h-4 w-4 mr-2" />
                       Replace
+                    </Button>
+                    <Button variant="outline" onClick={() => handleRotate(selectedImage)}>
+                      <RotateCcw className="h-4 w-4 mr-2" />
+                      Rotate
                     </Button>
                   </div>
                 </div>

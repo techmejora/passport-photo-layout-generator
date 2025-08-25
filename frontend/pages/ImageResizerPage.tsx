@@ -118,6 +118,19 @@ export default function ImageResizerPage() {
     input.click();
   }, [handleFile]);
 
+  const handleRotate = useCallback((rotatedImageData: string) => {
+    setSelectedImage(rotatedImageData);
+    
+    // Update dimensions for rotated image
+    const img = new Image();
+    img.onload = () => {
+      setOriginalDimensions({ width: img.width, height: img.height });
+      setNewWidth(img.width.toString());
+      setNewHeight(img.height.toString());
+    };
+    img.src = rotatedImageData;
+  }, []);
+
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -157,6 +170,7 @@ export default function ImageResizerPage() {
                   src={selectedImage}
                   alt="Selected image"
                   onReplace={handleReplace}
+                  onRotate={handleRotate}
                 />
               ) : (
                 <FileUploadZone onFileSelect={handleFile} />

@@ -94,6 +94,10 @@ export default function ImageCropperPage() {
     input.click();
   }, [handleFile]);
 
+  const handleRotate = useCallback((rotatedImageData: string) => {
+    setSelectedImage(rotatedImageData);
+  }, []);
+
   return (
     <div className="container mx-auto px-4 py-8 bg-gradient-to-br from-green-50 to-emerald-50 min-h-screen">
       {/* Header */}
@@ -123,10 +127,12 @@ export default function ImageCropperPage() {
               {selectedImage ? (
                 <div className="space-y-4">
                   <div className="relative">
-                    <img
+                    <ImagePreview
                       src={selectedImage}
                       alt="Selected image"
-                      className="w-full h-64 object-contain rounded-lg border-2 border-dashed border-green-300 bg-gradient-to-br from-green-50 to-emerald-50"
+                      onReplace={handleReplace}
+                      onRotate={handleRotate}
+                      className="relative"
                     />
                     {/* Crop overlay simulation */}
                     <div className="absolute inset-4 border-2 border-green-500 bg-green-500 bg-opacity-10 rounded-lg pointer-events-none">
@@ -135,12 +141,6 @@ export default function ImageCropperPage() {
                       <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-green-500 rounded-full shadow-lg"></div>
                       <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full shadow-lg"></div>
                     </div>
-                  </div>
-                  <div className="flex space-x-2">
-                    <Button variant="outline" className="flex-1 border-green-200 hover:bg-green-50" onClick={handleReplace}>
-                      <Upload className="h-4 w-4 mr-2" />
-                      Replace
-                    </Button>
                   </div>
                 </div>
               ) : (

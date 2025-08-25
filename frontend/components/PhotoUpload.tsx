@@ -83,6 +83,10 @@ export default function PhotoUpload({
     input.click();
   }, [handleFile]);
 
+  const handleRotate = useCallback((rotatedImageData: string) => {
+    onImageUpdate(rotatedImageData);
+  }, [onImageUpdate]);
+
   return (
     <Card className="border-0 shadow-xl bg-gradient-to-br from-blue-50 to-purple-50">
       <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
@@ -98,6 +102,7 @@ export default function PhotoUpload({
             alt="Selected photo"
             onReplace={handleReplace}
             onProcess={removeBackground}
+            onRotate={handleRotate}
             isProcessing={isProcessing}
           />
         ) : (
