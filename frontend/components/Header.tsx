@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Camera, Menu, X, Crop, Maximize, Sparkles, CreditCard, Video, IdCard, Crown, ChevronDown, Image, Play } from 'lucide-react';
+import { Camera, Menu, X, Crop, Maximize, Sparkles, CreditCard, Video, IdCard, Crown, ChevronDown, Image, Play, Eraser } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { useAuth } from '../hooks/useAuth';
@@ -15,6 +15,7 @@ export default function Header() {
     { name: 'Image Resizer', href: '/image-resizer', icon: Maximize, description: 'Resize images to any dimension' },
     { name: 'Image Cropper', href: '/image-cropper', icon: Crop, description: 'Crop images with precision' },
     { name: 'Image Enhancer', href: '/image-enhancer', icon: Sparkles, description: 'Enhance photos with filters' },
+    { name: 'Background Remover', href: '/background-remover', icon: Eraser, description: 'Remove backgrounds with AI' },
     { name: 'Passport Photo', href: '/passport-photo', icon: Camera, description: 'Create passport photos' },
   ];
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Maximize, Crop, Sparkles, Camera, Video, IdCard } from 'lucide-react';
+import { ArrowRight, Maximize, Crop, Sparkles, Camera, Video, IdCard, Eraser } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -37,14 +37,24 @@ export default function ToolsSection() {
       hoverShadow: 'hover:shadow-purple-500/25'
     },
     {
+      icon: Eraser,
+      title: 'Background Remover',
+      description: 'Remove backgrounds from images instantly using AI. Perfect for product photos.',
+      href: '/background-remover',
+      gradient: 'from-orange-500 via-red-500 to-pink-500',
+      bgGradient: 'from-orange-50 to-red-50',
+      iconBg: 'from-orange-600 to-red-600',
+      hoverShadow: 'hover:shadow-orange-500/25'
+    },
+    {
       icon: Camera,
       title: 'Passport Photo Maker',
       description: 'Create professional passport photos with correct dimensions and backgrounds.',
       href: '/passport-photo',
-      gradient: 'from-orange-500 via-amber-500 to-yellow-500',
-      bgGradient: 'from-orange-50 to-amber-50',
-      iconBg: 'from-orange-600 to-amber-600',
-      hoverShadow: 'hover:shadow-orange-500/25'
+      gradient: 'from-amber-500 via-yellow-500 to-orange-500',
+      bgGradient: 'from-amber-50 to-yellow-50',
+      iconBg: 'from-amber-600 to-yellow-600',
+      hoverShadow: 'hover:shadow-amber-500/25'
     },
     {
       icon: Video,

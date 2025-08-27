@@ -8,6 +8,7 @@ import PassportPhotoPage from './pages/PassportPhotoPage';
 import ImageResizerPage from './pages/ImageResizerPage';
 import ImageCropperPage from './pages/ImageCropperPage';
 import ImageEnhancerPage from './pages/ImageEnhancerPage';
+import ImageBackgroundRemoverPage from './pages/ImageBackgroundRemoverPage';
 import VideoConverterPage from './pages/VideoConverterPage';
 import PvcCardMakerPage from './pages/PvcCardMakerPage';
 import PricingPage from './pages/PricingPage';
@@ -30,6 +31,7 @@ function App() {
                 <Route path="/image-resizer" element={<ImageResizerPage />} />
                 <Route path="/image-cropper" element={<ImageCropperPage />} />
                 <Route path="/image-enhancer" element={<ImageEnhancerPage />} />
+                <Route path="/background-remover" element={<ImageBackgroundRemoverPage />} />
                 <Route path="/video-converter" element={<VideoConverterPage />} />
                 <Route path="/pvc-card-maker" element={<PvcCardMakerPage />} />
                 <Route path="/pricing" element={<PricingPage />} />

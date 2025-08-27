@@ -156,6 +156,7 @@ export namespace card {
  */
 import { cropImage as api_image_crop_cropImage } from "~backend/image/crop";
 import { enhanceImage as api_image_enhance_enhanceImage } from "~backend/image/enhance";
+import { removeBackground as api_image_remove_background_removeBackground } from "~backend/image/remove-background";
 import { resizeImage as api_image_resize_resizeImage } from "~backend/image/resize";
 
 export namespace image {
@@ -167,6 +168,7 @@ export namespace image {
             this.baseClient = baseClient
             this.cropImage = this.cropImage.bind(this)
             this.enhanceImage = this.enhanceImage.bind(this)
+            this.removeBackground = this.removeBackground.bind(this)
             this.resizeImage = this.resizeImage.bind(this)
         }
 
@@ -186,6 +188,15 @@ export namespace image {
             // Now make the actual call to the API
             const resp = await this.baseClient.callTypedAPI(`/image/enhance`, {method: "POST", body: JSON.stringify(params)})
             return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_image_enhance_enhanceImage>
+        }
+
+        /**
+         * Removes background from image using AI
+         */
+        public async removeBackground(params: RequestType<typeof api_image_remove_background_removeBackground>): Promise<ResponseType<typeof api_image_remove_background_removeBackground>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/image/remove-background`, {method: "POST", body: JSON.stringify(params)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_image_remove_background_removeBackground>
         }
 
         /**

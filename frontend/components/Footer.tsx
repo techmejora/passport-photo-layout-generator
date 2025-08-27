@@ -7,6 +7,7 @@ export default function Footer() {
     { name: 'Image Resizer', href: '/image-resizer' },
     { name: 'Image Cropper', href: '/image-cropper' },
     { name: 'Image Enhancer', href: '/image-enhancer' },
+    { name: 'Background Remover', href: '/background-remover' },
     { name: 'Passport Photo Maker', href: '/passport-photo' },
     { name: 'Video Converter', href: '/video-converter' },
     { name: 'PVC Card Maker', href: '/pvc-card-maker' },
