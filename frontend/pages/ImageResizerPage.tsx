@@ -6,13 +6,18 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Maximize, Download, Upload, RotateCcw, ExternalLink } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { useUsageLimit } from '../hooks/useUsageLimit';
 import backend from '~backend/client';
 import FileUploadZone from '../components/ui/FileUploadZone';
 import ImagePreview from '../components/ui/ImagePreview';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
+import UsageLimitModal from '../components/pricing/UsageLimitModal';
+import { useNavigate } from 'react-router-dom';
 
 export default function ImageResizerPage() {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { checkUsageLimit, recordUsage } = useUsageLimit();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [originalDimensions, setOriginalDimensions] = useState({ width: 0, height: 0 });
   const [newWidth, setNewWidth] = useState('');
@@ -23,6 +28,8 @@ export default function ImageResizerPage() {
   const [format, setFormat] = useState('jpeg');
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedResult, setProcessedResult] = useState<any>(null);
+  const [showUsageLimitModal, setShowUsageLimitModal] = useState(false);
+  const [usageLimitInfo, setUsageLimitInfo] = useState<any>(null);
 
   const handleFile = useCallback((file: File) => {
     const reader = new FileReader();
@@ -68,6 +75,14 @@ export default function ImageResizerPage() {
       return;
     }
 
+    // Check usage limit first
+    const usageCheck = await checkUsageLimit('image');
+    if (!usageCheck.allowed) {
+      setUsageLimitInfo(usageCheck);
+      setShowUsageLimitModal(true);
+      return;
+    }
+
     setIsProcessing(true);
     try {
       const result = await backend.image.resizeImage({
@@ -80,6 +95,9 @@ export default function ImageResizerPage() {
       });
 
       setProcessedResult(result);
+      
+      // Record usage after successful operation
+      await recordUsage('image');
       
       toast({
         title: "Image Resized Successfully",
@@ -386,6 +404,19 @@ export default function ImageResizerPage() {
           </Card>
         </div>
       </div>
+
+      {/* Usage Limit Modal */}
+      <UsageLimitModal
+        isOpen={showUsageLimitModal}
+        onClose={() => setShowUsageLimitModal(false)}
+        onUpgrade={() => {
+          setShowUsageLimitModal(false);
+          navigate('/pricing');
+        }}
+        operation="image processing"
+        remaining={usageLimitInfo?.remaining || 0}
+        limit={usageLimitInfo?.limit || 0}
+      />
     </div>
   );
 }

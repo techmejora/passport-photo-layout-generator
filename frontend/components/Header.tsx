@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Camera, Menu, X, Crop, Maximize, Sparkles, CreditCard, Video, IdCard } from 'lucide-react';
+import { Camera, Menu, X, Crop, Maximize, Sparkles, CreditCard, Video, IdCard, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '../hooks/useAuth';
+import UserButton from './auth/UserButton';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { isSignedIn } = useAuth();
 
   const navigation = [
     { name: 'Home', href: '/', icon: null, color: 'from-pink-500 to-rose-500' },
@@ -59,12 +62,15 @@ export default function Header() {
             })}
           </nav>
 
-          {/* CTA Button */}
+          {/* CTA Button and User */}
           <div className="hidden lg:flex items-center space-x-4">
-            <Button className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-semibold shadow-lg transform hover:scale-105 transition-all duration-300">
-              <CreditCard className="h-4 w-4 mr-2" />
-              Go Premium
-            </Button>
+            <Link to="/pricing">
+              <Button className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-semibold shadow-lg transform hover:scale-105 transition-all duration-300">
+                <Crown className="h-4 w-4 mr-2" />
+                Go Premium
+              </Button>
+            </Link>
+            <UserButton />
           </div>
 
           {/* Mobile menu button */}
@@ -102,11 +108,16 @@ export default function Header() {
                   </Link>
                 );
               })}
-              <div className="pt-4 border-t border-purple-300">
-                <Button className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-semibold">
-                  <CreditCard className="h-4 w-4 mr-2" />
-                  Go Premium
-                </Button>
+              <div className="pt-4 border-t border-purple-300 space-y-2">
+                <Link to="/pricing" onClick={() => setIsMenuOpen(false)}>
+                  <Button className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-semibold">
+                    <Crown className="h-4 w-4 mr-2" />
+                    Go Premium
+                  </Button>
+                </Link>
+                <div className="flex justify-center pt-2">
+                  <UserButton />
+                </div>
               </div>
             </nav>
           </div>
