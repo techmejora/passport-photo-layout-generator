@@ -250,9 +250,9 @@ export default function CardLayoutGenerator() {
                   <div 
                     className="mx-auto border-2 border-gray-300 rounded-lg p-2 bg-white"
                     style={{
-                      width: '300px',
-                      height: paperSize === '4x6' ? '200px' : '400px',
-                      aspectRatio: paperSize === '4x6' ? '3/2' : paperSize === 'A4' ? '210/297' : '8.5/11'
+                      width: '200px',
+                      height: '300px',
+                      aspectRatio: '4/6'
                     }}
                   >
                     <div 
@@ -280,7 +280,7 @@ export default function CardLayoutGenerator() {
                     </div>
                   </div>
                   <p className="text-center text-sm text-gray-500 mt-2">
-                    {totalCards} cards on {paperSize} paper
+                    {totalCards} cards on {paperSize} paper (4" W × 6" H)
                     {paperSize === '4x6' && backCardImage && (
                       <span className="block text-xs text-blue-600 mt-1">
                         Top row: Front cards, Bottom row: Back cards
@@ -311,7 +311,7 @@ export default function CardLayoutGenerator() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="4x6">4×6 inch (Photo Paper)</SelectItem>
+                      <SelectItem value="4x6">4×6 inch (Photo Paper) - Vertical</SelectItem>
                       <SelectItem value="A4">A4 (210×297 mm)</SelectItem>
                       <SelectItem value="Letter">Letter (8.5×11 inch)</SelectItem>
                     </SelectContent>
@@ -406,7 +406,7 @@ export default function CardLayoutGenerator() {
                       setSpacing(5);
                     }}
                   >
-                    4×6 - 2 Cards
+                    4×6 - 2 Cards Vertical
                   </Button>
                   <Button 
                     variant="outline" 
@@ -453,7 +453,7 @@ export default function CardLayoutGenerator() {
               <div className="bg-teal-50 p-4 rounded-lg">
                 <h4 className="font-medium text-teal-800 mb-2">Layout Summary</h4>
                 <div className="text-sm text-teal-700 space-y-1">
-                  <div>Paper: {paperSize}</div>
+                  <div>Paper: {paperSize} (4" W × 6" H - Vertical)</div>
                   <div>Total Cards: {totalCards}</div>
                   <div>Grid: {cardsPerRow} × {cardsPerColumn}</div>
                   <div>Spacing: {spacing}mm</div>

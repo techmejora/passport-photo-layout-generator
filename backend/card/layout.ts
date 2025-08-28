@@ -40,9 +40,9 @@ export const generateCardLayout = api<GenerateCardLayoutRequest, GenerateCardLay
   async (req) => {
     const layoutId = `layout_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
-    // Paper size configurations in mm
+    // Paper size configurations in mm - 4x6 is now vertical (4" width × 6" height)
     const paperSizes = {
-      "4x6": { width: 152.4, height: 101.6 }, // 6x4 inches
+      "4x6": { width: 101.6, height: 152.4 }, // 4x6 inches vertical (4" W × 6" H)
       "A4": { width: 210, height: 297 },
       "Letter": { width: 215.9, height: 279.4 }
     };
@@ -288,7 +288,7 @@ function generateCardLayoutHtml(
       top: 2mm;
       left: 2mm;
       right: 2mm;
-      font-size: 8px;
+      font-size: 7px;
       color: #666;
       text-align: center;
       z-index: 10;
@@ -362,7 +362,7 @@ function generateCardLayoutHtml(
   <div class="page-container">
     <!-- Info header (hidden in print) -->
     <div class="info-header">
-      PVC Card Layout - ${req.paperSize} Paper | Card Size: ${req.cardSize} | 
+      PVC Card Layout - ${req.paperSize} Paper (4" W × 6" H - Vertical) | Card Size: ${req.cardSize} | 
       Grid: ${req.cardsPerRow} × ${req.cardsPerColumn} = ${req.cardsPerRow * req.cardsPerColumn} cards | 
       Spacing: ${req.spacing}mm | ${req.bleedArea ? 'With' : 'Without'} bleed area | 
       ${req.paperSize === '4x6' && req.backCardImage ? 'Top: Front Cards, Bottom: Back Cards' : 'Alternating Front/Back'} | Print at 100% scale
