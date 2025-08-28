@@ -16,7 +16,7 @@ export default function CardLayoutGenerator() {
   const [backCardImage, setBackCardImage] = useState<string | null>(null);
   const [paperSize, setPaperSize] = useState('4x6');
   const [cardSize, setCardSize] = useState('CR80');
-  const [cardsPerRow, setCardsPerRow] = useState(2);
+  const [cardsPerRow, setCardsPerRow] = useState(1);
   const [cardsPerColumn, setCardsPerColumn] = useState(2);
   const [spacing, setSpacing] = useState(5);
   const [bleedArea, setBleedArea] = useState(true);
@@ -401,12 +401,12 @@ export default function CardLayoutGenerator() {
                     className="border-teal-200 hover:bg-teal-50"
                     onClick={() => {
                       setPaperSize('4x6');
-                      setCardsPerRow(2);
+                      setCardsPerRow(1);
                       setCardsPerColumn(2);
                       setSpacing(5);
                     }}
                   >
-                    4×6 - 4 Cards
+                    4×6 - 2 Cards
                   </Button>
                   <Button 
                     variant="outline" 
