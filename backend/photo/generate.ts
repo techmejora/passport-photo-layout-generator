@@ -272,6 +272,27 @@ function createPrintableLayout(req: GenerateLayoutRequest): string {
       width: 0;
     }
     
+    /* Print button styling */
+    .print-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      font-family: Arial, sans-serif;
+    }
+    
+    .print-button:hover {
+      background: #0056b3;
+    }
+    
     /* Print-specific styles */
     @media print {
       html, body {
@@ -281,15 +302,23 @@ function createPrintableLayout(req: GenerateLayoutRequest): string {
       }
       
       .info-header {
-        display: none;
+        display: none !important;
       }
       
       .margin-guide {
-        display: none;
+        display: none !important;
       }
       
       .paper-border {
-        display: none;
+        display: none !important;
+      }
+      
+      .print-button {
+        display: none !important;
+      }
+      
+      .screen-only {
+        display: none !important;
       }
       
       .page-container {
@@ -319,24 +348,29 @@ function createPrintableLayout(req: GenerateLayoutRequest): string {
 <body>
   <div class="page-container">
     <!-- Info header (hidden in print) -->
-    <div class="info-header">
+    <div class="info-header screen-only">
       Passport Photo Layout - ${req.paperSize} Paper | Photo Size: ${req.photoSize} | 
       Grid: ${req.rows} × ${req.columns} = ${req.rows * req.columns} photos | 
       Background: ${req.backgroundColor} | Print at 100% scale
     </div>
     
     <!-- Paper border (hidden in print) -->
-    <div class="paper-border"></div>
+    <div class="paper-border screen-only"></div>
     
     <!-- Margin guides (hidden in print) -->
-    <div class="margin-guide top"></div>
-    <div class="margin-guide bottom"></div>
-    <div class="margin-guide left"></div>
-    <div class="margin-guide right"></div>
+    <div class="margin-guide top screen-only"></div>
+    <div class="margin-guide bottom screen-only"></div>
+    <div class="margin-guide left screen-only"></div>
+    <div class="margin-guide right screen-only"></div>
     
     <!-- Photo grid -->
     ${photoGrid}
   </div>
+  
+  <!-- Print button (hidden in print) -->
+  <button class="print-button screen-only" onclick="printLayout()">
+    🖨️ Print Layout
+  </button>
   
   <script>
     // Auto-print functionality
@@ -344,34 +378,18 @@ function createPrintableLayout(req: GenerateLayoutRequest): string {
       window.print();
     }
     
-    // Add print button for convenience
-    document.addEventListener('DOMContentLoaded', function() {
-      // Only add print button on screen, not in print
-      if (window.matchMedia && !window.matchMedia('print').matches) {
-        const printBtn = document.createElement('button');
-        printBtn.innerHTML = '🖨️ Print Layout';
-        printBtn.style.cssText = \`
-          position: fixed;
-          top: 20px;
-          right: 20px;
-          padding: 10px 20px;
-          background: #007bff;
-          color: white;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          font-size: 14px;
-          z-index: 1000;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        \`;
-        printBtn.onclick = printLayout;
-        document.body.appendChild(printBtn);
-      }
-    });
-    
     // Ensure images are loaded before printing
     window.addEventListener('load', function() {
       console.log('Layout loaded and ready for printing');
+    });
+    
+    // Handle keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      // Ctrl+P or Cmd+P for print
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+        e.preventDefault();
+        printLayout();
+      }
     });
   </script>
 </body>

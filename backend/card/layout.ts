@@ -228,7 +228,7 @@ function generateCardLayoutHtml(
           </div>
           
           <!-- Card label (hidden in print) -->
-          <div class="card-label" style="
+          <div class="card-label screen-only" style="
             position: absolute;
             bottom: -6mm;
             left: 50%;
@@ -314,7 +314,28 @@ function generateCardLayoutHtml(
       pointer-events: none;
     }
     
-    /* Print-specific styles */
+    /* Print button styling */
+    .print-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      font-family: Arial, sans-serif;
+    }
+    
+    .print-button:hover {
+      background: #0056b3;
+    }
+    
+    /* Hide screen-only elements in print */
     @media print {
       html, body {
         -webkit-print-color-adjust: exact;
@@ -322,8 +343,12 @@ function generateCardLayoutHtml(
         color-adjust: exact;
       }
       
+      .screen-only {
+        display: none !important;
+      }
+      
       .info-header {
-        display: none;
+        display: none !important;
       }
       
       .card-label {
@@ -331,7 +356,11 @@ function generateCardLayoutHtml(
       }
       
       .paper-border {
-        display: none;
+        display: none !important;
+      }
+      
+      .print-button {
+        display: none !important;
       }
       
       .page-container {
@@ -361,7 +390,7 @@ function generateCardLayoutHtml(
 <body>
   <div class="page-container">
     <!-- Info header (hidden in print) -->
-    <div class="info-header">
+    <div class="info-header screen-only">
       PVC Card Layout - ${req.paperSize} Paper (4" W × 6" H - Vertical) | Card Size: ${req.cardSize} | 
       Grid: ${req.cardsPerRow} × ${req.cardsPerColumn} = ${req.cardsPerRow * req.cardsPerColumn} cards | 
       Spacing: ${req.spacing}mm | ${req.bleedArea ? 'With' : 'Without'} bleed area | 
@@ -369,11 +398,16 @@ function generateCardLayoutHtml(
     </div>
     
     <!-- Paper border (hidden in print) -->
-    <div class="paper-border"></div>
+    <div class="paper-border screen-only"></div>
     
     <!-- Card grid -->
     ${cardGrid}
   </div>
+  
+  <!-- Print button (hidden in print) -->
+  <button class="print-button screen-only" onclick="printLayout()">
+    🖨️ Print Layout
+  </button>
   
   <script>
     // Auto-print functionality
@@ -381,34 +415,18 @@ function generateCardLayoutHtml(
       window.print();
     }
     
-    // Add print button for convenience
-    document.addEventListener('DOMContentLoaded', function() {
-      // Only add print button on screen, not in print
-      if (window.matchMedia && !window.matchMedia('print').matches) {
-        const printBtn = document.createElement('button');
-        printBtn.innerHTML = '🖨️ Print Layout';
-        printBtn.style.cssText = \`
-          position: fixed;
-          top: 20px;
-          right: 20px;
-          padding: 10px 20px;
-          background: #007bff;
-          color: white;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          font-size: 14px;
-          z-index: 1000;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        \`;
-        printBtn.onclick = printLayout;
-        document.body.appendChild(printBtn);
-      }
-    });
-    
     // Ensure images are loaded before printing
     window.addEventListener('load', function() {
       console.log('Card layout loaded and ready for printing');
+    });
+    
+    // Handle keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      // Ctrl+P or Cmd+P for print
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+        e.preventDefault();
+        printLayout();
+      }
     });
   </script>
 </body>

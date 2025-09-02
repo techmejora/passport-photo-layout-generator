@@ -261,6 +261,27 @@ function generateCardHtml(
       margin: 2mm 0;
     }
     
+    /* Print button styling */
+    .print-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      font-family: Arial, sans-serif;
+    }
+    
+    .print-button:hover {
+      background: #0056b3;
+    }
+    
     /* Print-specific styles */
     @media print {
       html, body {
@@ -272,6 +293,14 @@ function generateCardHtml(
       .card-container {
         page-break-after: avoid;
         page-break-inside: avoid;
+      }
+      
+      .print-button {
+        display: none !important;
+      }
+      
+      .screen-only {
+        display: none !important;
       }
     }
     
@@ -300,33 +329,23 @@ function generateCardHtml(
     </div>
   </div>
   
+  <!-- Print button (hidden in print) -->
+  <button class="print-button screen-only" onclick="printCard()">
+    🖨️ Print Card
+  </button>
+  
   <script>
     // Auto-print functionality
     function printCard() {
       window.print();
     }
     
-    // Add print button for convenience
-    document.addEventListener('DOMContentLoaded', function() {
-      if (window.matchMedia && !window.matchMedia('print').matches) {
-        const printBtn = document.createElement('button');
-        printBtn.innerHTML = '🖨️ Print Card';
-        printBtn.style.cssText = \`
-          position: fixed;
-          top: 20px;
-          right: 20px;
-          padding: 10px 20px;
-          background: #007bff;
-          color: white;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          font-size: 14px;
-          z-index: 1000;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        \`;
-        printBtn.onclick = printCard;
-        document.body.appendChild(printBtn);
+    // Handle keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      // Ctrl+P or Cmd+P for print
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+        e.preventDefault();
+        printCard();
       }
     });
   </script>
@@ -534,9 +553,38 @@ function generatePrintReadyLayout(
       line-height: 1.4;
     }
     
+    /* Print button styling */
+    .print-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      font-family: Arial, sans-serif;
+    }
+    
+    .print-button:hover {
+      background: #0056b3;
+    }
+    
     @media print {
       .instructions {
         display: none;
+      }
+      
+      .print-button {
+        display: none !important;
+      }
+      
+      .screen-only {
+        display: none !important;
       }
     }
   </style>
@@ -549,7 +597,7 @@ function generatePrintReadyLayout(
                 width="${totalWidth}mm" 
                 height="${totalHeight}mm" 
                 frameborder="0"></iframe>
-        <div style="text-align: center; margin-top: 2mm; font-size: 8px;">FRONT</div>
+        <div style="text-align: center; margin-top: 2mm; font-size: 8px;" class="screen-only">FRONT</div>
       </div>
       
       ${backHtml ? `
@@ -558,12 +606,12 @@ function generatePrintReadyLayout(
                   width="${totalWidth}mm" 
                   height="${totalHeight}mm" 
                   frameborder="0"></iframe>
-          <div style="text-align: center; margin-top: 2mm; font-size: 8px;">BACK</div>
+          <div style="text-align: center; margin-top: 2mm; font-size: 8px;" class="screen-only">BACK</div>
         </div>
       ` : ''}
     </div>
     
-    <div class="instructions">
+    <div class="instructions screen-only">
       <h3>Printing Instructions:</h3>
       <ul>
         <li>Print at 100% scale (no scaling)</li>
@@ -576,6 +624,27 @@ function generatePrintReadyLayout(
       </ul>
     </div>
   </div>
+  
+  <!-- Print button (hidden in print) -->
+  <button class="print-button screen-only" onclick="printLayout()">
+    🖨️ Print Layout
+  </button>
+  
+  <script>
+    // Auto-print functionality
+    function printLayout() {
+      window.print();
+    }
+    
+    // Handle keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      // Ctrl+P or Cmd+P for print
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+        e.preventDefault();
+        printLayout();
+      }
+    });
+  </script>
 </body>
 </html>`;
 }
